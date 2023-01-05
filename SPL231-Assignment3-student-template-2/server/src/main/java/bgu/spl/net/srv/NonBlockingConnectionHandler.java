@@ -12,14 +12,14 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class NonBlockingConnectionHandler<T> implements ConnectionHandler<T> {
 
-    private static final int BUFFER_ALLOCATION_SIZE = 1 << 13; //8k
-    private static final ConcurrentLinkedQueue<ByteBuffer> BUFFER_POOL = new ConcurrentLinkedQueue<>();
+    protected static final int BUFFER_ALLOCATION_SIZE = 1 << 13; //8k
+    protected static final ConcurrentLinkedQueue<ByteBuffer> BUFFER_POOL = new ConcurrentLinkedQueue<>();
 
-    private final MessagingProtocol<T> protocol;
-    private final MessageEncoderDecoder<T> encdec;
-    private final Queue<ByteBuffer> writeQueue = new ConcurrentLinkedQueue<>();
-    private final SocketChannel chan;
-    private final Reactor reactor;
+    protected final MessagingProtocol<T> protocol;
+    protected final MessageEncoderDecoder<T> encdec;
+    protected final Queue<ByteBuffer> writeQueue = new ConcurrentLinkedQueue<>();
+    protected final SocketChannel chan;
+    protected final Reactor reactor;
 
     public NonBlockingConnectionHandler(
             MessageEncoderDecoder<T> reader,
@@ -49,6 +49,9 @@ public class NonBlockingConnectionHandler<T> implements ConnectionHandler<T> {
                     while (buf.hasRemaining()) {
                         T nextMessage = encdec.decodeNextByte(buf.get());
                         if (nextMessage != null) {
+
+                            // proccess(nextMessage,?this?)
+                            
                             T response = protocol.process(nextMessage);
                             if (response != null) {
                                 writeQueue.add(ByteBuffer.wrap(encdec.encode(response)));
@@ -118,6 +121,13 @@ public class NonBlockingConnectionHandler<T> implements ConnectionHandler<T> {
 
     @Override
     public void send(T msg) {
-        //IMPLEMENT IF NEEDED
+
+        // add the message to the write queue
+        writeQueue.add(ByteBuffer.wrap(encdec.encode(msg)));
+        reactor.updateInterestedOps(chan, SelectionKey.OP_READ | SelectionKey.OP_WRITE);
+
+        continueWrite();
+
+
     }
 }

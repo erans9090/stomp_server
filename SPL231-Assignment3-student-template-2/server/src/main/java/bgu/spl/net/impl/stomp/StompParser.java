@@ -31,6 +31,7 @@ public class StompParser {
         Map<String, Object> parsedMessage = new HashMap<>();
         Map<String, String> headers = parseHeaders(message);
         String body = parseBody(message);
+        parsedMessage.put("command", message.substring(0, message.indexOf("\n")));
         parsedMessage.put("headers", headers);
         parsedMessage.put("body", body);
         return parsedMessage;
@@ -60,4 +61,5 @@ public class StompParser {
 
         return true;
     }
+
 }

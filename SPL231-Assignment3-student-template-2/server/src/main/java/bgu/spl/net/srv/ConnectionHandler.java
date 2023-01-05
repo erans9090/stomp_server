@@ -22,6 +22,8 @@ public interface ConnectionHandler<T> extends Closeable {
      /*
       * sends msg T to the client. Should be used by the send commands in
       * the Connections implementation
+      *
+      * @param msg the message to send to the client
       */
     void send(T msg);
 

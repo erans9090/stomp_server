@@ -6,6 +6,20 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Launch Tests",
+            "request": "launch",
+            "mainClass": "bgu.spl.net.impl.stomp.Tests",
+            "projectName": "server"
+        },
+        {
+            "type": "java",
+            "name": "Launch StompParser",
+            "request": "launch",
+            "mainClass": "bgu.spl.net.impl.stomp.StompParser",
+            "projectName": "server"
+        },
+        {
+            "type": "java",
             "name": "Launch Current File",
             "request": "launch",
             "mainClass": "${file}"

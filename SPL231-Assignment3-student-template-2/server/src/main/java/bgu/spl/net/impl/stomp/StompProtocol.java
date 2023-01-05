@@ -11,13 +11,16 @@ import bgu.spl.net.srv.Connections;
 public class StompProtocol<T> implements StompMessagingProtocol<T>{
 
     private boolean shouldTerminate = false;
+    private Connections connections;
 
-    private List<Integer> connectionIds;
+    // private List<Integer> connectionIds;
 
 
-    public StompProtocol() {
+    public StompProtocol(Connections connections) {
+        
 
-        connectionIds = new ArrayList<Integer>();
+        // connectionIds = new ArrayList<Integer>();
+        this.connections = connections;
      
     }
     // private int connectionId;
@@ -27,21 +30,77 @@ public class StompProtocol<T> implements StompMessagingProtocol<T>{
 
         // check if client is already connected
 
-        if (connectionIds.contains(connectionId)) {
-            // send error message
-            return;
-        }
-
         // Integer id = connections.addConnection(new ConnectionHandler<StompProtocol>());
 
-
+        // TODO
 
     }
 
     @Override
     public void process(T message) {
 
-        // shouldTerminate = "bye".equals(message);
+        // check if message is valid
+        if (!StompParser.isValidMessage((String)message)){
+            // send error message
+            return;
+        }
+
+        //parse message
+        Map<String, Object> parsedMessage = StompParser.parseMessage((String)message);
+
+        if (parsedMessage.get("command").equals("DISCONNECT")){
+            terminate();
+            return;
+        }
+
+        // handle message according to the frame type
+        switch ((String)parsedMessage.get("command")) {
+            case "CONNECT":
+                // connect to the server
+                // make a connection handler for the client
+                // add the connection handler to the connections list
+                // send connected message
+
+
+                break;
+            case "SEND":
+
+                // check if the subscription subscribed to the channel
+                // if not, send error message
+                
+                // make sure not send a message to yourself??
+                // if yes, send the message to all the subscribers
+                connections.send((String)parsedMessage.get("destination"), (String)parsedMessage.get("body"));
+
+                break;
+            case "SUBSCRIBE":
+
+                // add the subscription to the channel (create the channel if not exists)
+                // send subscribed message
+                connections.addSubscription((String)parsedMessage.get("destination"), (Integer)parsedMessage.get("id"));
+
+                break;
+            case "UNSUBSCRIBE":
+
+                // remove the subscription from all channels
+                connections.unsubscribe((int)parsedMessage.get("id"));
+
+                break;
+            case "DISCONNECT":
+                // remove the connection from the connections list
+                // send disconnected message
+                // terminate the connection
+                connections.disconnect((int)parsedMessage.get("id"));
+
+                break;
+            default:
+                // send error message
+                break;
+        }
+
+
+
+
         // System.out.println("[" + LocalDateTime.now() + "]: " + message);
 
         // T ans;
@@ -82,44 +141,41 @@ public class StompProtocol<T> implements StompMessagingProtocol<T>{
          * 
          * 
         */
-
-        Map<String, Object> parsedMessage = StompParser.parseMessage((String)message);
-
-                            if (parsedMessage == null) {
             // send error message
-            return;
+            
         }
 
-        String frameType = (String)parsedMessage.get("frameType");
+        // String frameType = (String)parsedMessage.get("frameType");
 
-        if (frameType == null) {
-            // send error message
-            return;
-        }
+        // if (frameType == null) {
+        //     // send error message
+        //     return;
+        // }
 
-        switch (frameType) {
-            case "CONNECT":
-                // do something
-                break;
-            case "SEND":
-                // do something
-                break;
-            case "SUBSCRIBE":
-                // do something
-                break;
-            case "UNSUBSCRIBE":
-                // do something
-                break;
-            case "DISCONNECT":
-                // do something
-                break;
-            default:
-                // send error message
-                break;
-        }             
+        // switch (frameType) {
+        //     case "CONNECT":
+        //         // do something
+        //         break;
+        //     case "SEND":
+        //         // do something
+        //         break;
+        //     case "SUBSCRIBE":
+        //         // do something
+        //         break;
+        //     case "UNSUBSCRIBE":
+        //         // do something
+        //         break;
+        //     case "DISCONNECT":
+        //         // do something
+        //         break;
+        //     default:
+        //         // send error message
+        //         break;
+        // }             
         
 
-
+    private void terminate() {
+        // TODO Auto-generated method stub
     }
 
     @Override
