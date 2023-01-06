@@ -7,46 +7,44 @@ import java.util.Map;
 import bgu.spl.net.api.StompMessagingProtocol;
 import bgu.spl.net.srv.ConnectionHandler;
 import bgu.spl.net.srv.Connections;
+import bgu.spl.net.srv.Reactor;
 
 public class StompProtocol<T> implements StompMessagingProtocol<T>{
 
     private boolean shouldTerminate = false;
     private Connections connections;
+    private boolean isConnected;
+    private int connectionId;
 
     // private List<Integer> connectionIds;
 
 
-    public StompProtocol(Connections connections) {
-        
+    public StompProtocol() {
 
         // connectionIds = new ArrayList<Integer>();
-        this.connections = connections;
+        this.connections = Reactor.connections;
+        isConnected = false;
+
      
     }
-    // private int connectionId;
 
     @Override
     public void start(int connectionId, Connections<T> connections) {
-
-        // check if client is already connected
-
-        // Integer id = connections.addConnection(new ConnectionHandler<StompProtocol>());
-
-        // TODO
-
     }
 
     @Override
-    public void process(T message) {
+    public void process(String message) {
+
+        String response = "";
 
         // check if message is valid
-        if (!StompParser.isValidMessage((String)message)){
+        if (!StompParser.isValidMessage(message)){
             // send error message
             return;
         }
 
         //parse message
-        Map<String, Object> parsedMessage = StompParser.parseMessage((String)message);
+        Map<String, Object> parsedMessage = StompParser.parseMessage(message);
 
         if (parsedMessage.get("command").equals("DISCONNECT")){
             terminate();
@@ -56,6 +54,28 @@ public class StompProtocol<T> implements StompMessagingProtocol<T>{
         // handle message according to the frame type
         switch ((String)parsedMessage.get("command")) {
             case "CONNECT":
+
+                if(isConnected){
+                    // send error message
+                    response = "ERROR\nmessage:The client is already logged in, log out before trying again\n\n" + '\0';
+                    break;
+                }
+
+                // verify the user name and password
+                boolean verify = connections.verify((String)parsedMessage.get("login"), (String)parsedMessage.get("passcode"), connectionId);
+
+                if (verify == false){
+                    // send error message
+                    response = "ERROR\nmessage:Wrong username or password\n\n" + '\0';
+                    break;
+                }
+                else{
+                    // send connected message
+                    response = "CONNECTED\nversion:1.2\n\n" + '\0';
+                    isConnected = true;
+                }
+
+
                 // connect to the server
                 // make a connection handler for the client
                 // add the connection handler to the connections list
@@ -70,7 +90,7 @@ public class StompProtocol<T> implements StompMessagingProtocol<T>{
                 
                 // make sure not send a message to yourself??
                 // if yes, send the message to all the subscribers
-                connections.send((String)parsedMessage.get("destination"), (String)parsedMessage.get("body"));
+                connections.send((String)parsedMessage.get("destination"), (String)parsedMessage.get("body"),connectionId);
 
                 break;
             case "SUBSCRIBE":
@@ -94,85 +114,18 @@ public class StompProtocol<T> implements StompMessagingProtocol<T>{
 
                 break;
             default:
+                response = "ERROR\nmessage:Wrong command\n\n" + '\0';
                 // send error message
                 break;
         }
 
+        if(response != "")
+            connections.send(connectionId, response);
 
-
-
-        // System.out.println("[" + LocalDateTime.now() + "]: " + message);
-
-        // T ans;
-        // return ans;
-
-        /*
-         * 1. parse message
-         * 2. check if message is valid?
-         *  2.1 if not valid, send error message
-         * 
-         * 3.if valid handle message according to the frame type:
-         * 
-         * a. CONNECT
-         *  a.1 connect to the server
-         *  a.2 make a connection handler for the client
-         *  a.3 add the connection handler to the connections list
-         *  a.4 send connected message
-         * 
-         * b. SEND
-         *  b.1 check if the subscription subscribed to the topic
-         *  b.2 if not, send error message
-         *  b.3 if yes, send the message to all the subscribers
-         *  b.4 if failed, send error message
-         * 
-         * c. SUBSCRIBE
-         *  c.1 check if the topic exists
-         *  c.2 if not, create a new topic
-         *  c.3 add the client to the topic's subscribers list
-         *  c.4 if failed, send error message
-         * 
-         * d. UNSUBSCRIBE
-         *  d.1 delete the client from the topic's subscribers list
-         * 
-         * e. DISCONNECT
-         *  e.1 disconnect the client
-         *  e.2 send a receipt message
-         *  e.3 terminate the connection
-         * 
-         * 
-        */
-            // send error message
             
         }
 
-        // String frameType = (String)parsedMessage.get("frameType");
 
-        // if (frameType == null) {
-        //     // send error message
-        //     return;
-        // }
-
-        // switch (frameType) {
-        //     case "CONNECT":
-        //         // do something
-        //         break;
-        //     case "SEND":
-        //         // do something
-        //         break;
-        //     case "SUBSCRIBE":
-        //         // do something
-        //         break;
-        //     case "UNSUBSCRIBE":
-        //         // do something
-        //         break;
-        //     case "DISCONNECT":
-        //         // do something
-        //         break;
-        //     default:
-        //         // send error message
-        //         break;
-        // }             
-        
 
     private void terminate() {
         // TODO Auto-generated method stub

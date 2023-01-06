@@ -19,7 +19,7 @@ public interface StompMessagingProtocol<T>  {
      * 
      * @param message - the message to process
      */
-    void process(T message);
+    void process(String message);
 	
 	/**
      * @return true if the connection should be terminated
