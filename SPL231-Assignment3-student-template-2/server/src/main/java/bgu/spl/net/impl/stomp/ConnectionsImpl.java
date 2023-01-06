@@ -16,7 +16,8 @@ import bgu.spl.net.srv.Connections;
  */
 public class ConnectionsImpl<T> implements Connections<T> {
 
-    protected HashMap<Integer,StompConnectionHandler<String>> UsersIdToCH;
+    protected HashMap<Integer,StompConnectionHandler<String>> usersIdToCH;
+    protected HashMap<String,Integer> usersNameToID;
     protected HashMap<String, LinkedList<String>> channelToPosts;
     protected HashMap<String, LinkedList<Integer>> channelToUsersId;
 
@@ -28,19 +29,18 @@ public class ConnectionsImpl<T> implements Connections<T> {
     int connectionIdMaker = 0;
 
     public ConnectionsImpl() {
-    
-        UsersIdToCH = new HashMap<Integer,StompConnectionHandler<String>>();
+        usersIdToCH = new HashMap<Integer,StompConnectionHandler<String>>();
+        usersNameToID = new HashMap<String,Integer>();
         channelToPosts = new HashMap<String, LinkedList<String>>();
         channelToUsersId = new HashMap<String, LinkedList<Integer>>();
-
     }
 
     @Override
     public boolean send(int connectionId, T msg) {
 
-        for (Integer id : UsersIdToCH.keySet()) {
+        for (Integer id : usersIdToCH.keySet()) {
             if (id == connectionId) {
-                UsersIdToCH.get(id).send((String)msg);
+                usersIdToCH.get(id).send((String)msg);
                 return true;
             }
         }          
@@ -49,13 +49,22 @@ public class ConnectionsImpl<T> implements Connections<T> {
     }
 
     @Override
-    public void send(String channel, T msg) {
+    public void send(String channel, T msg, int connectionId) {
 
-        // make sure not send a message to yourself??
+
+        // if subscription is not subscribed to the channel send Error message
+        if (!channelToUsersId.get(channel).contains(connectionId)) {
+            String error = "ERROR\nmessage: You are not subscribed to this channel\n\n\0";
+            send(connectionId, (T)error);
+            return;
+        }
 
         if (channelToUsersId.containsKey(channel)) {
             for (Integer id : channelToUsersId.get(channel)) {
-                UsersIdToCH.get(id).send((String)msg);
+                
+                // make sure not send a message to yourself??
+                
+                usersIdToCH.get(id).send((String)msg);
             }
         }
     }
@@ -64,7 +73,7 @@ public class ConnectionsImpl<T> implements Connections<T> {
     public void disconnect(int connectionId) {
 
         unsubscribe(connectionId);
-        UsersIdToCH.remove(connectionId);
+        usersIdToCH.remove(connectionId);
         
         // send receipt to client
         String receipt = "RECEIPT\nreceipt-id:" + connectionId + "\n\n\0";
@@ -130,7 +139,7 @@ public class ConnectionsImpl<T> implements Connections<T> {
     }
 
     private void isConnected(int connectionId) { // throws Exception?
-        if (!UsersIdToCH.containsKey(connectionId)) {
+        if (!usersIdToCH.containsKey(connectionId)) {
 
             // send ERROR message to the client
             String error = "ERROR\nmessage:User is not connected\n\n\0";
@@ -145,6 +154,26 @@ public class ConnectionsImpl<T> implements Connections<T> {
     public Integer connect(ConnectionHandler<T> connectionHandler) {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    public boolean verify(String userName, String password, int id) {
+
+        if(usersToPassword.containsKey(userName)) {
+            if (!usersToPassword.get(userName).equals(password)) {
+                return false;
+            }
+        } else {
+            // TODO: CHECK IF NEW USER OR LOGED IN FROM ANOTHER CLIENT! -------- 
+            usersToPassword.put(userName, password);
+            usersNameToID.put(userName, id);
+        }
+
+        return true;
+    }
+
+    @Override
+    public void addConnection(int connectionId, StompConnectionHandler<String> connectionHandler) {
+        usersIdToCH.put(connectionId, connectionHandler);
     }
 
 

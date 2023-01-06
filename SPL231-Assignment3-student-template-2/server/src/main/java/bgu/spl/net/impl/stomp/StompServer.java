@@ -12,12 +12,12 @@ public class StompServer {
         //         StompParser::new //message encoder decoder factory
         // ).serve();
 
-        // Server.reactor(
-        //         Runtime.getRuntime().availableProcessors(),
-        //         7777, //port
-        //         () ->  new StompProtocol<String>(), //protocol factory
-        //         StompParser::new //message encoder decoder factory
-        // ).serve();
+        Server.reactor(
+                Runtime.getRuntime().availableProcessors(),
+                7777, //port
+                () ->  new StompProtocol<String>(), //protocol factory
+                StompEncoderDecoder::new //message encoder decoder factory
+        ).serve();
 
 
     }

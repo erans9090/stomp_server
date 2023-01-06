@@ -2,6 +2,8 @@ package bgu.spl.net.srv;
 
 import java.io.IOException;
 
+import bgu.spl.net.impl.stomp.StompConnectionHandler;
+
 public interface Connections<T> {
 
     /*
@@ -12,7 +14,7 @@ public interface Connections<T> {
     /*
      * sends a message T to all the clients subscribed to the given channel.
      */
-    void send(String channel, T msg);
+    void send(String channel, T msg, int connectionId);
 
     /**
      * 
@@ -55,6 +57,16 @@ public interface Connections<T> {
      * 
      */
     void unsubscribe(int connectionId);
+
+    boolean verify(String string, String string2, int id);
+
+
+    /**
+     * 
+     * @param connectionId
+     * @param connectionHandler
+     */
+    void addConnection(int connectionId, StompConnectionHandler<String> connectionHandler);
 
 
 }

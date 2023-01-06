@@ -105,7 +105,7 @@ public class NonBlockingConnectionHandler<T> implements ConnectionHandler<T> {
         }
     }
 
-    private static ByteBuffer leaseBuffer() {
+    protected static ByteBuffer leaseBuffer() {
         ByteBuffer buff = BUFFER_POOL.poll();
         if (buff == null) {
             return ByteBuffer.allocateDirect(BUFFER_ALLOCATION_SIZE);
@@ -115,7 +115,7 @@ public class NonBlockingConnectionHandler<T> implements ConnectionHandler<T> {
         return buff;
     }
 
-    private static void releaseBuffer(ByteBuffer buff) {
+    protected static void releaseBuffer(ByteBuffer buff) {
         BUFFER_POOL.add(buff);
     }
 
@@ -127,7 +127,6 @@ public class NonBlockingConnectionHandler<T> implements ConnectionHandler<T> {
         reactor.updateInterestedOps(chan, SelectionKey.OP_READ | SelectionKey.OP_WRITE);
 
         continueWrite();
-
 
     }
 }
