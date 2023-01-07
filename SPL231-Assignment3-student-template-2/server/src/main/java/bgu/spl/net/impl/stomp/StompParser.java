@@ -38,7 +38,7 @@ public class StompParser {
     }
 
     public static boolean isValidMessage(String message) {
-        if (!message.startsWith("CONNECTED") && !message.startsWith("SEND") && !message.startsWith("SUBSCRIBE") && !message.startsWith("UNSUBSCRIBE") && !message.startsWith("DISCONNECT") && !message.startsWith("MESSAGE") && !message.startsWith("RECEIPT")){
+        if (!message.startsWith("CONNECT") && !message.startsWith("SEND") && !message.startsWith("SUBSCRIBE") && !message.startsWith("UNSUBSCRIBE") && !message.startsWith("DISCONNECT") && !message.startsWith("MESSAGE") && !message.startsWith("RECEIPT")){
         // Check that the message starts with a command (CONNECT, SEND, etc.)
             return false;
         }

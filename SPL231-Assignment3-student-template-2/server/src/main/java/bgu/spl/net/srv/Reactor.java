@@ -116,9 +116,9 @@ public class Reactor<T> implements Server<T> {
                 protocolFactory.get(),
                 clientChan,
                 this,
-                idMaker++);
+                idMaker);
         clientChan.register(selector, SelectionKey.OP_READ, handler);
-        connections.addConnection(idMaker, (StompConnectionHandler)handler);
+        connections.addConnection(idMaker++, (StompConnectionHandler)handler);
     }
 
     private void handleReadWrite(SelectionKey key) {

@@ -38,29 +38,18 @@ public class StompConnectionHandler<T> extends NonBlockingConnectionHandler<T> {
         this.channelsList = null;
     }
 
-    // @Override
-    // public void close() {
-    //     // TODO Auto-generated method stub
-
-    // }
-
-    // @Override
-    // public void send(T msg) {
-    //     // TODO Auto-generated method stub
-
-    // }
-
+    
     @Override
     public Runnable continueRead() {
         ByteBuffer buf = super.leaseBuffer();
-
+        
         boolean success = false;
         try {
             success = chan.read(buf) != -1;
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-
+        
         if (success) {
             buf.flip();
             return () -> {
@@ -81,8 +70,41 @@ public class StompConnectionHandler<T> extends NonBlockingConnectionHandler<T> {
             close();
             return null;
         }
+        
+    }
 
+    @Override
+    public void continueWrite() {
+        while (!writeQueue.isEmpty()) {
+            try {
+                ByteBuffer top = writeQueue.peek();
+                chan.write(top);
+                if (top.hasRemaining()) {
+                    return;
+                } else {
+                    writeQueue.remove();
+                }
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                close();
+            }
+        }
+
+        if (writeQueue.isEmpty()) {
+            if (stompProtocol.shouldTerminate()) close();
+            else reactor.updateInterestedOps(chan, SelectionKey.OP_READ);
+        }
     }
     
+    @Override
+    public void send(T msg) {
 
+        // add the message to the write queue
+        writeQueue.add(ByteBuffer.wrap(encdec.encode(msg)));
+        reactor.updateInterestedOps(chan, SelectionKey.OP_READ | SelectionKey.OP_WRITE);
+    
+        continueWrite();
+    
+    }
+    
 }

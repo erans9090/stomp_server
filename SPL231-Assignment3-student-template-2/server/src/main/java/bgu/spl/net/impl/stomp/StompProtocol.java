@@ -25,12 +25,9 @@ public class StompProtocol<T> implements StompMessagingProtocol<T>{
 
 
     public StompProtocol() {
-
         // connectionIds = new ArrayList<Integer>();
         this.connections = Reactor.connections;
         isConnected = false;
-
-     
     }
 
     @Override
@@ -60,8 +57,8 @@ public class StompProtocol<T> implements StompMessagingProtocol<T>{
         switch ((String)parsedMessage.get("command")) {
             case "CONNECT":
 
-                String userName = (String)parsedMessage.get("login");
-                String password = (String)parsedMessage.get("passcode");
+                String userName = (String)(((HashMap<String,String>)parsedMessage.get("headers")).get("login"));
+                String password = (String)(((HashMap<String,String>)parsedMessage.get("headers")).get("passcode"));
 
                 //verify:
                 if(isConnected) //the user already logged in:
@@ -77,6 +74,7 @@ public class StompProtocol<T> implements StompMessagingProtocol<T>{
                 // make a connection handler for the client
                 // add the connection handler to the connections list
                 // send connected message
+                break;
 
 
             case "SEND":

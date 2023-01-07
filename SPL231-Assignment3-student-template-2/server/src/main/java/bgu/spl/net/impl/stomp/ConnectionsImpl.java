@@ -32,6 +32,7 @@ public class ConnectionsImpl<T> implements Connections<T> {
         usersNameToID = new HashMap<String,Integer>();
         channelToPosts = new HashMap<String, LinkedList<String>>();
         channelToUsersId = new HashMap<String, LinkedList<Integer>>();
+        usersToPassword = new HashMap<String,String>();
     }
 
     @Override
