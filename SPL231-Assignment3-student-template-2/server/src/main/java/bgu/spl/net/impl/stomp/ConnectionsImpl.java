@@ -20,8 +20,7 @@ public class ConnectionsImpl<T> implements Connections<T> {
     protected HashMap<String,Integer> usersNameToID;
     protected HashMap<String, LinkedList<String>> channelToPosts;
     protected HashMap<String, LinkedList<Integer>> channelToUsersId;
-
-    private HashMap<String,String> usersToPassword;
+    protected HashMap<String,String> usersToPassword;
 
     // private HashMap<String,String> usersToSubscriptionId;?? is neccessary?
 
@@ -156,19 +155,23 @@ public class ConnectionsImpl<T> implements Connections<T> {
         return null;
     }
 
-    public boolean verify(String userName, String password, int id) {
-
-        if(usersToPassword.containsKey(userName)) {
-            if (!usersToPassword.get(userName).equals(password)) {
-                return false;
+    public String verifyConnection(String userName, String password, int id) {
+        if(usersToPassword.containsKey(userName)) 
+        {
+            //wrong password:
+            if (!usersToPassword.get(userName).equals(password)) 
+                return "ERROR\nmessage:Wrong password\n\n" + '\0';
+            else { //case password is corrrect:
+                if(usersNameToID.get(userName).equals(id))
+                    return ("CONNECTED\nversion:1.2\n\n" + "\0");
+                else //the user already logged in from a different computer:
+                    return "ERROR\nmessage:User already logged in\n\n" + '\0';
             }
-        } else {
-            // TODO: CHECK IF NEW USER OR LOGED IN FROM ANOTHER CLIENT! -------- 
+        } else { //make a new user:
             usersToPassword.put(userName, password);
             usersNameToID.put(userName, id);
+            return "CONNECTED\nversion:1.2\n\n" + '\0';
         }
-
-        return true;
     }
 
     @Override

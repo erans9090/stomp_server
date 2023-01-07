@@ -58,7 +58,7 @@ public interface Connections<T> {
      */
     void unsubscribe(int connectionId);
 
-    boolean verify(String string, String string2, int id);
+    String verifyConnection(String string, String string2, int id);
 
 
     /**

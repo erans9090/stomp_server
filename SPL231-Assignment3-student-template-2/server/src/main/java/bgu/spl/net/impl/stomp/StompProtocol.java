@@ -4,10 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.lang.model.util.ElementScanner14;
+
+import java.util.HashMap;
+
 import bgu.spl.net.api.StompMessagingProtocol;
 import bgu.spl.net.srv.ConnectionHandler;
 import bgu.spl.net.srv.Connections;
 import bgu.spl.net.srv.Reactor;
+
 
 public class StompProtocol<T> implements StompMessagingProtocol<T>{
 
@@ -55,26 +60,18 @@ public class StompProtocol<T> implements StompMessagingProtocol<T>{
         switch ((String)parsedMessage.get("command")) {
             case "CONNECT":
 
-                if(isConnected){
-                    // send error message
+                String userName = (String)parsedMessage.get("login");
+                String password = (String)parsedMessage.get("passcode");
+
+                //verify:
+                if(isConnected) //the user already logged in:
                     response = "ERROR\nmessage:The client is already logged in, log out before trying again\n\n" + '\0';
-                    break;
-                }
-
-                // verify the user name and password
-                boolean verify = connections.verify((String)parsedMessage.get("login"), (String)parsedMessage.get("passcode"), connectionId);
-
-                if (verify == false){
-                    // send error message
-                    response = "ERROR\nmessage:Wrong username or password\n\n" + '\0';
-                    break;
-                }
-                else{
-                    // send connected message
-                    response = "CONNECTED\nversion:1.2\n\n" + '\0';
+                else
+                    response = connections.verifyConnection(userName, password, connectionId);
+                
+                
+                if(response.length() > 0 && response.charAt(0) == 'C')
                     isConnected = true;
-                }
-
 
                 // connect to the server
                 // make a connection handler for the client
@@ -82,7 +79,6 @@ public class StompProtocol<T> implements StompMessagingProtocol<T>{
                 // send connected message
 
 
-                break;
             case "SEND":
 
                 // check if the subscription subscribed to the channel
@@ -93,6 +89,7 @@ public class StompProtocol<T> implements StompMessagingProtocol<T>{
                 connections.send((String)parsedMessage.get("destination"), (String)parsedMessage.get("body"),connectionId);
 
                 break;
+
             case "SUBSCRIBE":
 
                 // add the subscription to the channel (create the channel if not exists)
@@ -100,12 +97,14 @@ public class StompProtocol<T> implements StompMessagingProtocol<T>{
                 connections.addSubscription((String)parsedMessage.get("destination"), (Integer)parsedMessage.get("id"));
 
                 break;
+
             case "UNSUBSCRIBE":
 
                 // remove the subscription from all channels
                 connections.unsubscribe((int)parsedMessage.get("id"));
 
                 break;
+
             case "DISCONNECT":
                 // remove the connection from the connections list
                 // send disconnected message
