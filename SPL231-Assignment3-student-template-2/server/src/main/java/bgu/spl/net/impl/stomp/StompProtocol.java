@@ -12,6 +12,8 @@ import bgu.spl.net.api.StompMessagingProtocol;
 import bgu.spl.net.srv.ConnectionHandler;
 import bgu.spl.net.srv.Connections;
 import bgu.spl.net.srv.Reactor;
+import java.util.concurrent.ConcurrentHashMap;
+
 
 
 public class StompProtocol<T> implements StompMessagingProtocol<T>{
@@ -26,12 +28,16 @@ public class StompProtocol<T> implements StompMessagingProtocol<T>{
 
     public StompProtocol() {
         // connectionIds = new ArrayList<Integer>();
-        this.connections = Reactor.connections;
+        this.connectionId = -1;
+        System.out.println("StompProtocol created, connectionId: " + connectionId);
         isConnected = false;
     }
 
     @Override
-    public void start(int connectionId, Connections<T> connections) {
+    public void start(int connectionId,Connections<T> connections) {
+        this.connections = connections;
+        this.connectionId = connectionId;
+        
     }
 
     @Override
@@ -40,25 +46,23 @@ public class StompProtocol<T> implements StompMessagingProtocol<T>{
         String response = "";
 
         // check if message is valid
-        if (!StompParser.isValidMessage(message)){
-            // send error message
-            return;
-        }
+        // if (!StompParser.isValidMessage(message)){
+        //     // send error message
+        //     return;
+        // }
 
         //parse message
         Map<String, Object> parsedMessage = StompParser.parseMessage(message);
-
-        if (parsedMessage.get("command").equals("DISCONNECT")){
-            terminate();
-            return;
-        }
+        HashMap<String,String> headers = (HashMap<String,String>)parsedMessage.get("headers");
 
         // handle message according to the frame type
         switch ((String)parsedMessage.get("command")) {
             case "CONNECT":
 
-                String userName = (String)(((HashMap<String,String>)parsedMessage.get("headers")).get("login"));
-                String password = (String)(((HashMap<String,String>)parsedMessage.get("headers")).get("passcode"));
+                String userName = headers.get("login");
+                String password = headers.get("passcode");
+                User user = ((ConnectionsImpl<?>)connections).connectionIdToUser.get(connectionId);
+                
 
                 //verify:
                 if(isConnected) //the user already logged in:
@@ -67,7 +71,7 @@ public class StompProtocol<T> implements StompMessagingProtocol<T>{
                     response = connections.verifyConnection(userName, password, connectionId);
                 
                 
-                if(response.length() > 0 && response.charAt(0) == 'C')
+                if(response.charAt(0) == 'C')
                     isConnected = true;
 
                 // connect to the server
@@ -76,15 +80,17 @@ public class StompProtocol<T> implements StompMessagingProtocol<T>{
                 // send connected message
                 break;
 
-
             case "SEND":
 
                 // check if the subscription subscribed to the channel
                 // if not, send error message
-                
-                // make sure not send a message to yourself??
+                if(!isConnected){
+                    response = "ERROR\nmessage:You are not logged in\n\n" + '\0';
+                    break;
+                }
+
                 // if yes, send the message to all the subscribers
-                connections.send((String)parsedMessage.get("destination"), (String)parsedMessage.get("body"),connectionId);
+                connections.send(headers.get("destination"), headers.get("body"), connectionId);
 
                 break;
 
@@ -92,14 +98,16 @@ public class StompProtocol<T> implements StompMessagingProtocol<T>{
 
                 // add the subscription to the channel (create the channel if not exists)
                 // send subscribed message
-                connections.addSubscription((String)parsedMessage.get("destination"), (Integer)parsedMessage.get("id"));
+
+                response = connections.addSubscription(headers.get("destination"), connectionId, Integer.parseInt(headers.get("id")), Integer.parseInt(headers.get("receipt")));                
 
                 break;
 
             case "UNSUBSCRIBE":
 
-                // remove the subscription from all channels
-                connections.unsubscribe((int)parsedMessage.get("id"));
+                // remove the subscription from games
+
+                response = connections.unsubscribe( connectionId, Integer.parseInt(headers.get("receipt")), Integer.parseInt(headers.get("id")));
 
                 break;
 
@@ -107,9 +115,11 @@ public class StompProtocol<T> implements StompMessagingProtocol<T>{
                 // remove the connection from the connections list
                 // send disconnected message
                 // terminate the connection
-                connections.disconnect((int)parsedMessage.get("id"));
+                
+                connections.disconnect(Integer.parseInt(headers.get("id")), Integer.parseInt(headers.get("receipt")));
 
                 break;
+            
             default:
                 response = "ERROR\nmessage:Wrong command\n\n" + '\0';
                 // send error message
@@ -118,15 +128,7 @@ public class StompProtocol<T> implements StompMessagingProtocol<T>{
 
         if(response != "")
             connections.send(connectionId, response);
-
-            
         }
-
-
-
-    private void terminate() {
-        // TODO Auto-generated method stub
-    }
 
     @Override
     public boolean shouldTerminate() {

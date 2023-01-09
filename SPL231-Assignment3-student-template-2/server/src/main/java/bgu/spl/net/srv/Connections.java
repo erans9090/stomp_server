@@ -9,30 +9,17 @@ public interface Connections<T> {
     /*
      * sends a message T to client represented by the given connectionId.
      */
-    boolean send(int connectionId, T msg);
+    void send(int connectionId, T msg);
 
     /*
      * sends a message T to all the clients subscribed to the given channel.
      */
     void send(String channel, T msg, int connectionId);
 
-    /**
-     * 
-     * @param connectionHandler
-     * @return the connectionId of the new connection
-     * 
-     * add a new connection to the map
-     * 
-     * verify user name and password
-     * send error message if the password is incorrect
-     * 
-     */
-    Integer connect(ConnectionHandler<T> connectionHandler);
-
     /*
      * Removes an active client connectionId from the map
      */
-    void disconnect(int connectionId);
+    void disconnect(int connectionId, int receiptId);
 
 
     /**
@@ -46,7 +33,7 @@ public interface Connections<T> {
      * do nothing if the subscription is already subscribed to the channel
      * 
      */
-    void addSubscription(String channel, Integer connectionId);
+    String addSubscription(String channel, Integer connectionId, int subId, int receiptId);
 
     /**
      * 
@@ -56,7 +43,12 @@ public interface Connections<T> {
      * remove a subscription from all channels
      * 
      */
-    void unsubscribe(int connectionId);
+    String unsubscribeAllGames(int connectionId, int receiptId);
+
+    String unsubscribe(int connectionId, int receiptId, int subId);
+
+
+
 
     String verifyConnection(String string, String string2, int id);
 

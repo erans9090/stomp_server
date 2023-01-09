@@ -125,8 +125,5 @@ public class NonBlockingConnectionHandler<T> implements ConnectionHandler<T> {
         // add the message to the write queue
         writeQueue.add(ByteBuffer.wrap(encdec.encode(msg)));
         reactor.updateInterestedOps(chan, SelectionKey.OP_READ | SelectionKey.OP_WRITE);
-
-        continueWrite();
-
     }
 }

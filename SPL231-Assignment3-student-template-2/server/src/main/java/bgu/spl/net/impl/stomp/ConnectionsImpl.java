@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Handler;
 
 import bgu.spl.net.srv.ConnectionHandler;
 import bgu.spl.net.srv.Connections;
@@ -16,168 +18,170 @@ import bgu.spl.net.srv.Connections;
  */
 public class ConnectionsImpl<T> implements Connections<T> {
 
-    protected HashMap<Integer,StompConnectionHandler<String>> usersIdToCH;
-    protected HashMap<String,Integer> usersNameToID;
-    protected HashMap<String, LinkedList<String>> channelToPosts;
-    protected HashMap<String, LinkedList<Integer>> channelToUsersId;
-    protected HashMap<String,String> usersToPassword;
-
-    // private HashMap<String,String> usersToSubscriptionId;?? is neccessary?
-
-
-    int connectionIdMaker = 0;
+    protected ConcurrentHashMap<String,User> nameToUser;
+    protected ConcurrentHashMap<Integer,User> connectionIdToUser;
+    protected ConcurrentHashMap<String, LinkedList<User>> gameToUsers;
+    private int messageIdMaker = 0;
 
     public ConnectionsImpl() {
-        usersIdToCH = new HashMap<Integer,StompConnectionHandler<String>>();
-        usersNameToID = new HashMap<String,Integer>();
-        channelToPosts = new HashMap<String, LinkedList<String>>();
-        channelToUsersId = new HashMap<String, LinkedList<Integer>>();
-        usersToPassword = new HashMap<String,String>();
+
+        nameToUser = new ConcurrentHashMap<String,User>();
+        connectionIdToUser = new ConcurrentHashMap<Integer,User>();
+        gameToUsers = new ConcurrentHashMap<String, LinkedList<User>>();
+        
     }
 
     @Override
-    public boolean send(int connectionId, T msg) {
-
-        for (Integer id : usersIdToCH.keySet()) {
-            if (id == connectionId) {
-                usersIdToCH.get(id).send((String)msg);
-                return true;
-            }
-        }          
-
-        return false;
+    public void send(int connectionId, T msg) {
+        connectionIdToUser.get(connectionId).getConnectionHandler().send((String)msg);
     }
 
     @Override
-    public void send(String channel, T msg, int connectionId) {
+    public void send(String game, T msg, int connectionId) {
 
+        boolean joinedToGame = connectionIdToUser.get(connectionId).isSubscribed(game);
 
         // if subscription is not subscribed to the channel send Error message
-        if (!channelToUsersId.get(channel).contains(connectionId)) {
+        if (!joinedToGame) {
             String error = "ERROR\nmessage: You are not subscribed to this channel\n\n\0";
             send(connectionId, (T)error);
             return;
         }
 
-        if (channelToUsersId.containsKey(channel)) {
-            for (Integer id : channelToUsersId.get(channel)) {
-                
-                // make sure not send a message to yourself??
-                
-                usersIdToCH.get(id).send((String)msg);
+        int fromSubId = connectionIdToUser.get(connectionId).getSubId(game);
+
+        for (User user : gameToUsers.get(game)) {
+            
+            // make sure not send a message to yourself??
+            if (user.getConnectionId() == connectionId) {
+                continue;
             }
+            
+            String response = "MESSAGE\nsubscription:" + fromSubId + "\nmessage-id:" + messageIdMaker++ + "destination:" + game + "\n" + (String)msg + "\n\0";
+            user.send(response);
+            
         }
     }
 
     @Override
-    public void disconnect(int connectionId) {
+    public void disconnect(int connectionId, int receiptId) {
 
-        unsubscribe(connectionId);
-        usersIdToCH.remove(connectionId);
-        
-        // send receipt to client
-        String receipt = "RECEIPT\nreceipt-id:" + connectionId + "\n\n\0";
+        User userToDisconnect = connectionIdToUser.get(connectionId);
+
+        // send receipt to user:
+        String receipt = "RECEIPT\nreceipt-id:" + receiptId + "\n\n\0";
         send(connectionId, (T)receipt);
 
-    }
+        //unsubscribe from all games:
+        unsubscribeAllGames(connectionId, -1);
 
-    // @Override
-    // public String connect(String userName, String password) {
+        //remove from connection id to User:
+        connectionIdToUser.remove(connectionId);
 
-    //     // verify user name and password
-    //     // if user doesn't exist make a new user with the given password
-    //     if(usersToPassword.containsKey(userName)) {
-    //         if (!usersToPassword.get(userName).equals(password)) {
-    //             // send error message if the password is incorrect
-    //             String error = "ERROR\nmessage:Wrong password\n\n\0";\
-    //             return error;
-    //         }
-    //     } else {
-    //         usersToPassword.put(userName, password);
-    //     }
-
-
-    //     UsersIdToCH.put(connectionIdMaker, (StompConnectionHandler<String>) connectionHandler);
-    //     return (String)(connectionIdMaker++);
-    // }
-
-    public void addChannel(String channel) {
-        if (!channelToPosts.containsKey(channel)) {
-            channelToPosts.put(channel, new LinkedList<String>());
-        }
-        if (!channelToUsersId.containsKey(channel)) {
-            channelToUsersId.put(channel, new LinkedList<Integer>());
-        }
-    }
-
-    public void addSubscription(String channel, Integer connectionId) {
+        //change user's fields:
+        userToDisconnect.disconnect();
         
-        // if channel doesn't exist create it
-        if (!channelToPosts.containsKey(channel)) {
-            channelToPosts.put(channel, new LinkedList<String>());
-            channelToUsersId.put(channel, new LinkedList<Integer>());
+    }
+
+    public String unsubscribeAllGames(int connectionId, int receiptId) {
+        User user = connectionIdToUser.get(connectionId);
+
+        for(String game : user.getGames().keySet()){
+            gameToUsers.get(game).remove(game);
+        }
+        user.removeAllGames();
+
+        return "RECEIPT\nreceipt-id:" + receiptId + "\n\n\0";
+    }
+
+    public String unsubscribe(int connectionId, int receiptId, int subId) {
+
+        User user = connectionIdToUser.get(connectionId);
+        
+        // remove user from game's users list
+        String game = user.getGame(subId);
+        if(game == null) {
+            return "ERROR\nmessage: You are not subscribed to this channel\n\n\0";
+        }
+        gameToUsers.get(game).remove(user);
+
+        // remove game from user's games list
+        user.removeGame(subId);
+
+
+        return "RECEIPT\nreceipt-id:" + receiptId + "\n\n\0";
+    }
+
+    public void addGame(String game) {
+        gameToUsers.put(game, new LinkedList<User>());
+    }
+
+
+    public String addSubscription(String game, Integer connectionId, int subId, int receiptId) {
+        
+        // if game doesn't exist create it
+        if (!gameToUsers.containsKey(game)) {
+            addGame(game);
         }
 
-        // if user is'nt subscribed to channel add him
-        if (!channelToUsersId.get(channel).contains(connectionId)) {
-            channelToUsersId.get(channel).add(connectionId);
+
+
+        // if user is'nt subscribed to game add him
+        if (!connectionIdToUser.get(connectionId).isSubscribed(game)) {
+            gameToUsers.get(game).add(connectionIdToUser.get(connectionId));
+            connectionIdToUser.get(connectionId).addGame(game, subId);
+        
             // send SUBSCRIBED message to the client
-            String subscribed = "SUBSCRIBED\nsubscription:" + connectionId + "\ndestination:" + channel + "\n\n\0";
-            send(connectionId, (T)subscribed);
+            String subscribed = "RECEIPT\nreceipt-id:" + receiptId + "\n\n\0";
+            return subscribed;
+        }
+        else { // user is already subscribed to game
+            return "ERROR\nmessage: You are already subscribed to this channel\n\n\0";
         }
 
     }
 
-    public void unsubscribe(int connectionId) {
-
-        for (String channel : channelToUsersId.keySet()) {
-            if (channelToUsersId.get(channel).contains(connectionId)) {
-                channelToUsersId.get(channel).remove(connectionId);
-            }
-        }
-
-    }
-
-    private void isConnected(int connectionId) { // throws Exception?
-        if (!usersIdToCH.containsKey(connectionId)) {
-
-            // send ERROR message to the client
-            String error = "ERROR\nmessage:User is not connected\n\n\0";
-            send(connectionId, (T)error);
-
-            // throw new Exception("User is not connected");?
-        }
-    }
-
-    // ???
-    @Override
-    public Integer connect(ConnectionHandler<T> connectionHandler) {
-        // TODO Auto-generated method stub
-        return null;
+    private boolean isConnected(int connectionId) { // throws Exception?
+        
+        return connectionIdToUser.contains(connectionId);
     }
 
     public String verifyConnection(String userName, String password, int id) {
-        if(usersToPassword.containsKey(userName)) 
-        {
-            //wrong password:
-            if (!usersToPassword.get(userName).equals(password)) 
-                return "ERROR\nmessage:Wrong password\n\n" + '\0';
-            else { //case password is corrrect:
-                if(usersNameToID.get(userName).equals(id))
-                    return ("CONNECTED\nversion:1.2\n\n" + "\0");
-                else //the user already logged in from a different computer:
-                    return "ERROR\nmessage:User already logged in\n\n" + '\0';
-            }
-        } else { //make a new user:
-            usersToPassword.put(userName, password);
-            usersNameToID.put(userName, id);
-            return "CONNECTED\nversion:1.2\n\n" + '\0';
+        System.out.println("verifyConnection");
+
+        // if user is new
+        if(!nameToUser.containsKey(userName)) {
+            User newUser = connectionIdToUser.get(id);
+            newUser.setUserName(userName);
+            newUser.setPassword(password);
+            newUser.setConnected(true);
+            nameToUser.put(userName, newUser);
         }
+        else{ // user exists
+
+                // password is wrong
+                if(!nameToUser.get(userName).getPassword().equals(password)) {
+                    return "ERROR\nmessage: Wrong password\n\n\0";
+                }
+                else if (nameToUser.get(userName).isConnected()) { // user is already connected
+                    return "ERROR\nmessage: User is already connected\n\n\0";
+                }
+                else { // user is not connected
+                    User user = new User(userName,password , connectionIdToUser.get(id).getConnectionHandler(),id);
+                    // override dummy user with real user
+                    connectionIdToUser.put(id, user);
+                    nameToUser.put(userName, user);
+                }
+
+            }
+        return "CONNECTED\nversion:1.2\n\n\u0000";
+
+        
     }
 
     @Override
     public void addConnection(int connectionId, StompConnectionHandler<String> connectionHandler) {
-        usersIdToCH.put(connectionId, connectionHandler);
+        connectionIdToUser.put(connectionId, new User(connectionId ,connectionHandler));
     }
 
 

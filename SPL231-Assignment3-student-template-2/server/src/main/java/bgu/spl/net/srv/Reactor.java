@@ -106,6 +106,7 @@ public class Reactor<T> implements Server<T> {
 
 
     private void handleAccept(ServerSocketChannel serverChan, Selector selector) throws IOException {
+        System.out.println("accepting");
         SocketChannel clientChan = serverChan.accept();
         clientChan.configureBlocking(false);
         // make uniqe final id for the connection handler
@@ -117,13 +118,16 @@ public class Reactor<T> implements Server<T> {
                 clientChan,
                 this,
                 idMaker);
+        ((StompConnectionHandler<T>)handler).stompProtocol.start(idMaker, connections);
         clientChan.register(selector, SelectionKey.OP_READ, handler);
-        connections.addConnection(idMaker++, (StompConnectionHandler)handler);
+        connections.addConnection(idMaker, (StompConnectionHandler)handler);
+        idMaker++;
+        System.out.println(idMaker);
     }
 
     private void handleReadWrite(SelectionKey key) {
         @SuppressWarnings("unchecked")
-        NonBlockingConnectionHandler<T> handler = (NonBlockingConnectionHandler<T>) key.attachment();
+        NonBlockingConnectionHandler<T> handler = (StompConnectionHandler<T>) key.attachment();
 
         if (key.isReadable()) {
             Runnable task = handler.continueRead();

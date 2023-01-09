@@ -6,6 +6,27 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Launch EchoClientC",
+            "request": "launch",
+            "mainClass": "bgu.spl.net.impl.echoClients.EchoClientC",
+            "projectName": "server"
+        },
+        {
+            "type": "java",
+            "name": "Launch EchoClientB",
+            "request": "launch",
+            "mainClass": "bgu.spl.net.impl.echoClients.EchoClientB",
+            "projectName": "server"
+        },
+        {
+            "type": "java",
+            "name": "Launch EchoClientA",
+            "request": "launch",
+            "mainClass": "bgu.spl.net.impl.echoClients.EchoClientA",
+            "projectName": "server"
+        },
+        {
+            "type": "java",
             "name": "Launch Tests",
             "request": "launch",
             "mainClass": "bgu.spl.net.impl.stomp.Tests",

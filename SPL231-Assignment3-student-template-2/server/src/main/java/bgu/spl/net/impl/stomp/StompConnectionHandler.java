@@ -2,6 +2,7 @@ package bgu.spl.net.impl.stomp;
 
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.SocketChannel;
@@ -22,7 +23,7 @@ public class StompConnectionHandler<T> extends NonBlockingConnectionHandler<T> {
     protected boolean isConnected;
     protected List<channel> channelsList;
 
-    protected final StompProtocol<T> stompProtocol;
+    public final StompProtocol<T> stompProtocol;
 
     public StompConnectionHandler(
             MessageEncoderDecoder<T> reader,
@@ -101,10 +102,7 @@ public class StompConnectionHandler<T> extends NonBlockingConnectionHandler<T> {
 
         // add the message to the write queue
         writeQueue.add(ByteBuffer.wrap(encdec.encode(msg)));
-        reactor.updateInterestedOps(chan, SelectionKey.OP_READ | SelectionKey.OP_WRITE);
-    
-        continueWrite();
-    
+        reactor.updateInterestedOps(chan, SelectionKey.OP_READ | SelectionKey.OP_WRITE);    
     }
     
 }
