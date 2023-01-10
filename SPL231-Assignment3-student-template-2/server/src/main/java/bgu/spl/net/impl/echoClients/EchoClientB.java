@@ -103,12 +103,12 @@ public class EchoClientB {
         sendMessageSubscribe ("germany_spain","17","73");
         // sendMessageUnsubscribe("17","73");
         sendMessageSEND("germany_spain","Hello World!");
-        // sendMessageSubscribe("Argentina_Brazil","18","74");
-        // sendMessageSEND("Argentina_Brazil","Game Started!!");
-        // sendMessageUnsubscribe("18","74");
-        // sendMessageSubscribe("Israel_Egypt","19","75");
-        // sendMessageSubscribe("france_italy","20","76");
-        // sendMessageSEND("france_italy","Great Game!");
+        sendMessageSubscribe("Argentina_Brazil","18","74");
+        sendMessageSEND("Argentina_Brazil","Game Started!!");
+        sendMessageUnsubscribe("18","74");
+        sendMessageSubscribe("Israel_Egypt","19","75");
+        sendMessageSubscribe("france_italy","20","76");
+        sendMessageSEND("france_italy","Great Game!");
         sendMessageDISCONNECT("77");
 
         } catch (IOException e) {

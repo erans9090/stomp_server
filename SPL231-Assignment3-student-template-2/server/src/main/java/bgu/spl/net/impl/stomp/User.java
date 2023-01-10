@@ -5,28 +5,52 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import bgu.spl.net.srv.BlockingConnectionHandler;
+import bgu.spl.net.srv.ConnectionHandler;
+
 public class User {
     
     private String userName;
     private String password;
-    private StompConnectionHandler<String> connectionHandler;
+    private ConnectionHandler<String> connectionHandler;
     private int connectionId;
     private HashMap<String,Integer> games;
     private boolean isConnected;
 
-    public User(int connectionId, StompConnectionHandler<String> connectionHandler) {
+    
+    //cont for Reactor:
+    public User(int connectionId, ConnectionHandler<String> connectionHandler) {
 
         this("NONAME", "", connectionHandler, connectionId);
     }
 
-    public User(String userName, String password, StompConnectionHandler<String> connectionHandler, int connectionId) {
+    public User(String userName, String password, ConnectionHandler<String> connectionHandler, int connectionId) {
         this.userName = userName;
         this.password = password;
-        this.connectionHandler = connectionHandler;
         this.connectionId = connectionId;
         games = new HashMap<String,Integer>();
         isConnected = true;
+        if(connectionHandler instanceof StompConnectionHandler)
+            this.connectionHandler = (StompConnectionHandler<String>)connectionHandler;
+        else
+            this.connectionHandler = (BlockingConnectionHandler<String>)connectionHandler;
+
     }
+
+    // //cont for TPC:
+    // public User(int connectionId, BlockingConnectionHandler<String> connectionHandler) {
+
+    //     this("NONAME", "", connectionHandler, connectionId);
+    // }
+
+    // public User(String userName, String password, BlockingConnectionHandler<String> connectionHandler, int connectionId) {
+    //     this.userName = userName;
+    //     this.password = password;
+    //     this.connectionHandler = (BlockingConnectionHandler<String>)connectionHandler;
+    //     this.connectionId = connectionId;
+    //     games = new HashMap<String,Integer>();
+    //     isConnected = true;
+    // }
     
     public String getUserName() {
         return userName;
@@ -44,7 +68,7 @@ public class User {
         this.password = password;
     }
 
-    public StompConnectionHandler<String> getConnectionHandler() {
+    public ConnectionHandler<String> getConnectionHandler() {
         return connectionHandler;
     }
 

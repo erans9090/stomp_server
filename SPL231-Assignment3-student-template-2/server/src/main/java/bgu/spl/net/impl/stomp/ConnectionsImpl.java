@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Handler;
 
+import bgu.spl.net.srv.BlockingConnectionHandler;
 import bgu.spl.net.srv.ConnectionHandler;
 import bgu.spl.net.srv.Connections;
 
@@ -165,7 +166,7 @@ public class ConnectionsImpl<T> implements Connections<T> {
                     return "ERROR\nmessage: User is already connected\n\n\0";
                 }
                 else { // user is not connected
-                    User user = new User(userName,password , connectionIdToUser.get(id).getConnectionHandler(),id);
+                    User user = new User(userName, password, connectionIdToUser.get(id).getConnectionHandler(),id);
                     // override dummy user with real user
                     connectionIdToUser.put(id, user);
                     nameToUser.put(userName, user);
@@ -181,6 +182,13 @@ public class ConnectionsImpl<T> implements Connections<T> {
     public void addConnection(int connectionId, StompConnectionHandler<String> connectionHandler) {
         connectionIdToUser.put(connectionId, new User(connectionId ,connectionHandler));
     }
+
+    @Override
+    public void addConnection(int connectionId, BlockingConnectionHandler<String> connectionHandler) {
+        connectionIdToUser.put(connectionId, new User(connectionId ,connectionHandler));
+    }
+
+
 
 
 

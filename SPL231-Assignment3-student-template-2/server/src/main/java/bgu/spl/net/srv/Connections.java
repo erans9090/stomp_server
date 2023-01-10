@@ -60,5 +60,7 @@ public interface Connections<T> {
      */
     void addConnection(int connectionId, StompConnectionHandler<String> connectionHandler);
 
+    public void addConnection(int connectionId, BlockingConnectionHandler<String> connectionHandler);
+
 
 }
