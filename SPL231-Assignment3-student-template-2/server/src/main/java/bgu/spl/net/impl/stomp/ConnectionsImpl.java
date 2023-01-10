@@ -33,6 +33,8 @@ public class ConnectionsImpl<T> implements Connections<T> {
 
     @Override
     public void send(int connectionId, T msg) {
+        System.out.println(">>> Server response:");
+        System.out.println((String)msg);
         connectionIdToUser.get(connectionId).getConnectionHandler().send((String)msg);
     }
 
@@ -57,7 +59,7 @@ public class ConnectionsImpl<T> implements Connections<T> {
                 continue;
             }
             
-            String response = "MESSAGE\nsubscription:" + fromSubId + "\nmessage-id:" + messageIdMaker++ + "destination:" + game + "\n" + (String)msg + "\n\0";
+            String response = "MESSAGE\nsubscription:" + fromSubId + "\nmessage-id:" + messageIdMaker++ + "\ndestination:" + game + "\n" + (String)msg + "\n\0";
             user.send(response);
             
         }
@@ -83,15 +85,13 @@ public class ConnectionsImpl<T> implements Connections<T> {
         
     }
 
-    public String unsubscribeAllGames(int connectionId, int receiptId) {
+    public void unsubscribeAllGames(int connectionId, int receiptId) {
         User user = connectionIdToUser.get(connectionId);
 
         for(String game : user.getGames().keySet()){
             gameToUsers.get(game).remove(game);
         }
         user.removeAllGames();
-
-        return "RECEIPT\nreceipt-id:" + receiptId + "\n\n\0";
     }
 
     public String unsubscribe(int connectionId, int receiptId, int subId) {
@@ -147,8 +147,6 @@ public class ConnectionsImpl<T> implements Connections<T> {
     }
 
     public String verifyConnection(String userName, String password, int id) {
-        System.out.println("verifyConnection");
-
         // if user is new
         if(!nameToUser.containsKey(userName)) {
             User newUser = connectionIdToUser.get(id);

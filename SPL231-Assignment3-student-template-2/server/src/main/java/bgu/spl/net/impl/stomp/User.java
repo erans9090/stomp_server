@@ -96,6 +96,7 @@ public class User {
     public void disconnect() {
         this.connectionHandler = null;
         this.connectionId = -1;
+        this.isConnected = false;
     }
 
     public boolean isConnected() {

@@ -43,7 +43,7 @@ public interface Connections<T> {
      * remove a subscription from all channels
      * 
      */
-    String unsubscribeAllGames(int connectionId, int receiptId);
+    void unsubscribeAllGames(int connectionId, int receiptId);
 
     String unsubscribe(int connectionId, int receiptId, int subId);
 

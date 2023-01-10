@@ -59,7 +59,7 @@ public class Reactor<T> implements Server<T> {
             serverSock.bind(new InetSocketAddress(port));
             serverSock.configureBlocking(false);
             serverSock.register(selector, SelectionKey.OP_ACCEPT);
-			System.out.println("Server started");
+			System.out.println(">>> Server started");
 
             while (!Thread.currentThread().isInterrupted()) {
 
@@ -88,7 +88,7 @@ public class Reactor<T> implements Server<T> {
             ex.printStackTrace();
         }
 
-        System.out.println("server closed!!!");
+        System.out.println(">>> server closed!!!");
         pool.shutdown();
     }
 
@@ -106,7 +106,6 @@ public class Reactor<T> implements Server<T> {
 
 
     private void handleAccept(ServerSocketChannel serverChan, Selector selector) throws IOException {
-        System.out.println("accepting");
         SocketChannel clientChan = serverChan.accept();
         clientChan.configureBlocking(false);
         // make uniqe final id for the connection handler
@@ -121,8 +120,9 @@ public class Reactor<T> implements Server<T> {
         ((StompConnectionHandler<T>)handler).stompProtocol.start(idMaker, connections);
         clientChan.register(selector, SelectionKey.OP_READ, handler);
         connections.addConnection(idMaker, (StompConnectionHandler)handler);
+        System.out.println(">>> New client accepted. id: " + idMaker);
         idMaker++;
-        System.out.println(idMaker);
+        
     }
 
     private void handleReadWrite(SelectionKey key) {

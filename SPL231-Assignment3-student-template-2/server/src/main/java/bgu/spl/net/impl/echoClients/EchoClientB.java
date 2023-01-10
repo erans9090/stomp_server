@@ -15,12 +15,14 @@ public class EchoClientB {
     public static BufferedWriter out;
     public static BufferedReader in;
 
-    public static void sendMessage(String msg){
+    public static void sendMessageWaitForResponse(String msg){
 
         try {
+            in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
             String line = "";
 
-            System.out.println(">>> sending message " + i ++  +" to server");
+            System.out.println(">>> sending message " + i ++  +" to server:");
+            System.out.println(msg);
             out.write(msg + '\0');
             out.flush();
 
@@ -35,7 +37,30 @@ public class EchoClientB {
                     break;
                 }
             }
-            System.out.println(response);
+
+            System.out.println("message got from the server: ");
+            System.out.println("----- START ------");
+            if(response != "")
+                System.out.println(response);
+            System.out.println("-----  END  ------");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public static void sendMessageWithoutResponse(String msg){
+
+        try {
+            in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
+            String line = "";
+
+            System.out.println(">>> sending message " + i ++  +" to server:");
+            System.out.println(msg);
+            out.write(msg + '\0');
+            out.flush();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -44,24 +69,29 @@ public class EchoClientB {
 
     public static void sendLoginMessage(String userName, String password){
         String msg = "CONNECT\naccept-version:1.2\nhost:stomp.cs.bgu.ac.il\nlogin:" + userName + "\npasscode:" + password + "\n\n";
-        sendMessage(msg);
+        sendMessageWaitForResponse(msg);
 
     }
 
     public static void sendMessageSubscribe (String destination, String id, String receipt){
         String msg = "SUBSCRIBE\ndestination:/" + destination + "\nid:" + id + "\nreceipt:" + receipt + "\n\n";
-        sendMessage(msg);
+        sendMessageWaitForResponse(msg);
     }
 
     public static void sendMessageUnsubscribe(String id, String receipt){
         String msg = "UNSUBSCRIBE\nid:" + id + "\nreceipt:" + receipt + "\n\n";
-        sendMessage(msg);
+        sendMessageWaitForResponse(msg);
     } 
 
     public static void sendMessageSEND(String destination, String body) {
         String msg = "SEND\ndestination:/" + destination + "\n\n" + body + "\n\n";
-        sendMessage(msg);
+        sendMessageWithoutResponse(msg);
         
+    }
+
+    public static void sendMessageDISCONNECT(String receipt){
+        String msg = "DISCONNECT\nreceipt:" + receipt + "\n\n";
+        sendMessageWaitForResponse(msg);
     }
 
     public static void main(String[] args) throws IOException {
@@ -82,6 +112,7 @@ public class EchoClientB {
         sendMessageSubscribe("Israel_Egypt","19","75");
         sendMessageSubscribe("france_italy","20","76");
         sendMessageSEND("france_italy","Great Game!");
+        sendMessageDISCONNECT("77");
 
         } catch (IOException e) {
             e.printStackTrace();

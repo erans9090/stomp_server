@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.lang.model.util.ElementScanner14;
+// import javax.lang.model.util.ElementScanner14;
 
 import java.util.HashMap;
 
@@ -29,7 +29,7 @@ public class StompProtocol<T> implements StompMessagingProtocol<T>{
     public StompProtocol() {
         // connectionIds = new ArrayList<Integer>();
         this.connectionId = -1;
-        System.out.println("StompProtocol created, connectionId: " + connectionId);
+        // System.out.println("StompProtocol created, connectionId: " + connectionId);
         isConnected = false;
     }
 
@@ -42,7 +42,8 @@ public class StompProtocol<T> implements StompMessagingProtocol<T>{
 
     @Override
     public void process(String message) {
-
+        System.out.println(">>> Server process msg:");
+        System.out.println(message);
         String response = "";
 
         // check if message is valid
@@ -90,12 +91,11 @@ public class StompProtocol<T> implements StompMessagingProtocol<T>{
                 }
 
                 // if yes, send the message to all the subscribers
-                connections.send(headers.get("destination"), headers.get("body"), connectionId);
+                connections.send(headers.get("destination"), parsedMessage.get("body"), connectionId);
 
                 break;
 
             case "SUBSCRIBE":
-
                 // add the subscription to the channel (create the channel if not exists)
                 // send subscribed message
 
@@ -116,7 +116,7 @@ public class StompProtocol<T> implements StompMessagingProtocol<T>{
                 // send disconnected message
                 // terminate the connection
                 
-                connections.disconnect(Integer.parseInt(headers.get("id")), Integer.parseInt(headers.get("receipt")));
+                connections.disconnect(connectionId, Integer.parseInt(headers.get("receipt")));
 
                 break;
             
@@ -126,15 +126,14 @@ public class StompProtocol<T> implements StompMessagingProtocol<T>{
                 break;
         }
 
-        if(response != "")
+        if(!response.equals("")) {
             connections.send(connectionId, response);
         }
+    }
 
     @Override
     public boolean shouldTerminate() {
         return false;
     }
-   
-    
     
 }
