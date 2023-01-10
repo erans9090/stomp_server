@@ -33,9 +33,9 @@ public class ConnectionsImpl<T> implements Connections<T> {
 
     @Override
     public void send(int connectionId, T msg) {
+        connectionIdToUser.get(connectionId).send((String)msg);
         System.out.println(">>> Server response:");
         System.out.println((String)msg);
-        connectionIdToUser.get(connectionId).getConnectionHandler().send((String)msg);
     }
 
     @Override
@@ -89,7 +89,7 @@ public class ConnectionsImpl<T> implements Connections<T> {
         User user = connectionIdToUser.get(connectionId);
 
         for(String game : user.getGames().keySet()){
-            gameToUsers.get(game).remove(game);
+            gameToUsers.get(game).remove(connectionIdToUser.get(connectionId));
         }
         user.removeAllGames();
     }

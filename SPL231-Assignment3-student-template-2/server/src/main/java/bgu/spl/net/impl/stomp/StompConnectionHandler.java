@@ -17,17 +17,6 @@ import bgu.spl.net.srv.Reactor;
 
 public class StompConnectionHandler<T> extends NonBlockingConnectionHandler<T> {
 
-    //added
-    protected static final int BUFFER_ALLOCATION_SIZE = 1 << 13; //8k
-    protected static final ConcurrentLinkedQueue<ByteBuffer> BUFFER_POOL = new ConcurrentLinkedQueue<>();
-
-    protected final StompProtocol<T> protocol;
-    protected final MessageEncoderDecoder<T> encdec;
-    protected final Queue<ByteBuffer> writeQueue = new ConcurrentLinkedQueue<>();
-    protected final SocketChannel chan;
-    protected final Reactor reactor;
-    // added
-
     // protected String userName;   ?
     // protected String subscriptionId;   ?
     protected int connectionId;
@@ -43,12 +32,6 @@ public class StompConnectionHandler<T> extends NonBlockingConnectionHandler<T> {
             Reactor reactor,
             int id) {
         super(reader, null, chan, reactor);
-        // added
-        this.chan = chan;
-        this.encdec = reader;
-        this.protocol = protocol;
-        this.reactor = reactor;
-        //added
         this.stompProtocol = protocol;
         this.connectionId = id;
         this.isConnected = false;

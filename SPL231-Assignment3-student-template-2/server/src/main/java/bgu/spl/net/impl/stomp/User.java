@@ -90,6 +90,7 @@ public class User {
     }
 
     public void send(String msg) {
+        // System.out.println("Send msg to User: " + connectionId);
         connectionHandler.send(msg);
     }
 
