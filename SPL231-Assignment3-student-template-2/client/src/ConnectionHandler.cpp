@@ -1,15 +1,14 @@
 #include "../include/ConnectionHandler.h"
 
-using boost::asio::ip::tcp;
-
 using std::cin;
 using std::cout;
 using std::cerr;
 using std::endl;
 using std::string;
+using boost::asio::ip::tcp;
 
-ConnectionHandler::ConnectionHandler(string host, short port) : host_(host), port_(port), io_service_(),
-                                                                socket_(io_service_) {}
+ConnectionHandler::ConnectionHandler(string host, short port) : host_(host), port_(port), io_service_(), socket_(io_service_) 
+{}
 
 ConnectionHandler::~ConnectionHandler() {
 	close();
@@ -65,7 +64,7 @@ bool ConnectionHandler::sendBytes(const char bytes[], int bytesToWrite) {
 }
 
 bool ConnectionHandler::getLine(std::string &line) {
-	return getFrameAscii(line, '\n');
+	return getFrameAscii(line, '\0');
 }
 
 bool ConnectionHandler::sendLine(std::string &line) {
