@@ -35,7 +35,7 @@
                     "ignoreFailures": true
                 }
             ],
-            "preLaunchTask": "make StompWCIClient"
+            "preLaunchTask": ""
         },
         {
             "name": "(gdb) Launch echo client",

@@ -41,13 +41,13 @@ string StompProtocol::buildMessage(string userCommand)
     return output;
 }
 
-string StompProtocol::parseMessage(string frame)
+string StompProtocol::parseMessage(string message)
 {
-    vector<string> parsedCommand = splitStringByChar(frame, '\n');
+    vector<string> parsedCommand = splitStringByChar(message, '\n');
     string keyword = parsedCommand.at(0);
     string output = "";
     if(keyword == "CONNECTED") {
-        output = "login successful";
+        output = "login successfully";
     }
     return output;
 }

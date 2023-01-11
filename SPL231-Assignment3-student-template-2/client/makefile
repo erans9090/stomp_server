@@ -4,7 +4,7 @@ LDFLAGS:=-lboost_system -lpthread
 all: StompWCIClient
 
 StompWCIClient: bin/ConnectionHandler.o bin/StompClient.o bin/event.o bin/KeyboardReader.o bin/StompProtocol.o bin/SocketReader.o bin/User.o
-	g++ -o bin/StompWCIClient bin/ConnectionHandler.o  bin/StompClient.o bin/KeyboardReader.o bin/StompProtocol.o bin/SocketReader.o bin/User.o bin/event.o$(LDFLAGS)
+	g++ -o bin/StompWCIClient bin/ConnectionHandler.o  bin/StompClient.o bin/KeyboardReader.o bin/StompProtocol.o bin/SocketReader.o bin/User.o bin/event.o $(LDFLAGS)
 
 bin/ConnectionHandler.o: src/ConnectionHandler.cpp
 	g++ $(CFLAGS) -o bin/ConnectionHandler.o src/ConnectionHandler.cpp

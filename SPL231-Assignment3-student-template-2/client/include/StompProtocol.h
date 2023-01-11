@@ -19,7 +19,7 @@ private:
 public:
     StompProtocol();
     std::string buildMessage(std::string command);
-    std::string parseMessage(std::string frame);
+    std::string parseMessage(std::string message);
     bool getShouldTerminate();
     void setShouldTerminate(bool value);
 };
