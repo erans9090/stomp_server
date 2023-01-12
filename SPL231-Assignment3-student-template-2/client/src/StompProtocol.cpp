@@ -13,11 +13,60 @@ StompProtocol::StompProtocol(User &_user) : user(_user)
 std::string StompProtocol::handleStompMessageFromServer(string message)
 {
     // parse the message:
-    std::unordered_map<std::string, std::string> parsedCommand = parser.parse_stomp_message(message);
-    std::string command = parsedCommand["title"];
+    std::unordered_map<std::string, std::string> parsedResponse = parser.parse_stomp_message(message);
+    std::string command = parsedResponse["title"];
     std::string output = "";
 
     // handle the message:
+    if(command == "CONNECTED")
+    {
+        user.setLoggedIn(true);
+        output = "Login successful";
+    }
+    else if (command == "ERROR")
+    {
+        // get the error message:
+        std::string errorMessage = parsedResponse["message"];
+
+        // print the error message:
+        output = errorMessage + "\n";
+    }
+    else if (command == "RECEIPT")
+    {
+        // get the receipt id:
+        int receiptId = std::stoi(parsedResponse["receipt-id"]);
+        output = user.getReceiptOutput(receiptId);
+    } 
+    else if (command == "MESSAGE")
+    {
+        // // get the game name:
+        // std::string gameName = parsedResponse["destination"];
+        // gameName = gameName.substr(1, gameName.length() - 1);
+
+        // // get the body:
+        // std::string body = parsedResponse["body"];
+
+        // // get the game:
+        // Game *game = user.getGame(gameName);
+
+        // // if the game is not null:
+        // if(game != nullptr)
+        // {
+        //     // update the game:
+        //     game->updateGame(body);
+        // }
+        // else
+        // {
+        //     // create a new game:
+        //     game = new Game(gameName, user.getUserName());
+        //     game->updateGame(body);
+        //     user.addGame(game);
+        // }
+
+        // // print the game:
+        // output = game->toString();
+    } 
+    
     
 
     // return the output:
@@ -54,7 +103,7 @@ string StompProtocol::buildFrameFromKeyboardCommand(std::string userCommand)
     } 
     else if (command == "exit")
     {
-
+        output = handleExit(parsedCommand);
     } 
 
     return output;
@@ -104,7 +153,8 @@ string StompProtocol::handleSummary(std::vector<std::string> parsedCommand)
 
 string StompProtocol::handleExit(std::vector<std::string> parsedCommand)
 {
-    return "";
+    user.unsubscribe(parsedCommand.at(1));
+    return "DISCONNECT\nreceipt:" + std::to_string(user.getReceiptId()) + "\n\n" + '\0';
 } 
 
 

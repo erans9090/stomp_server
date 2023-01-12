@@ -4,8 +4,10 @@
 
 #include <string>
 #include <vector>
+#include <unordered_map>
 
-User::User() : receiptIdMaker(0), subIdMaker(0), userName(""), password(""), connected(false), games(), connectionHandler()
+
+User::User() : receiptIdMaker(0), subIdMaker(0), userName(""), password(""), isConnectionHandlerConnected(false), isLogedIn(false), games(), receiptIdToMessage(), connectionHandler()
 {
 }
 
@@ -41,7 +43,7 @@ void User::setPassword(std::string pass)
 
 bool User::isConnected()
 {
-    return connected;
+    return isConnectionHandlerConnected;
 }
 
 void User::setConnected(std::vector<std::string> &parsedCommand)
@@ -62,13 +64,39 @@ void User::setConnected(std::vector<std::string> &parsedCommand)
         // connectionHandler = nullptr;
     }
     else{
-        connected = true;
+        isConnectionHandlerConnected = true;
         userName = parsedCommand.at(2);
         password = parsedCommand.at(3);
     }
 }
 
+bool User::isLoggedIn()
+{
+    return isLogedIn;
+}
+
+void User::setLoggedIn(bool loggedIn)
+{
+    isLogedIn = loggedIn;
+}
+
 ConnectionHandler &User::getConnectionHandler()
 {
     return connectionHandler;
+}
+
+void unsubscribe(string gameName)
+{
+    games.erase(gameName);
+
+}
+
+void User::addReceiptIdToMessage(int receiptId, string message)
+{
+    receiptIdToMessage[receiptId] = message;
+}
+
+std::string User::getReceiptOutput(int receiptId)
+{
+    return receiptIdToMessage[receiptId];
 }
