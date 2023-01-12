@@ -29,3 +29,7 @@ updates:
     to save when reciving massage
     4.3 user build full path - TODO
     4.4 in game - maybe write directly to the file is more efficient
+
+5. new function update game added and finished
+
+    5.1 tests

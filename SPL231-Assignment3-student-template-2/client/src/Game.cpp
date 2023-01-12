@@ -1,8 +1,7 @@
 
 #include "../include/Game.h"
 #include <fstream>
-#include "../include/event.h"
-#include "../include/StompParser.h"
+
 
 
 using std::string;
@@ -16,13 +15,13 @@ Game::Game(string teamA, string teamB) : teamA(teamA), teamAGoals(0), teamAPoses
 {
 }
 
-void Game::updateGame(string body)
+void Game::updateGame(string body,string user)
 {
-    Event &event = StompParser::parseEvent(body);
+    Event event = StompParser::parseEvent(body);
     // update game stats
-    map<string, string> teamAUpdates = event.get_team_a_updates();
-    map<string, string> teamBUpdates = event.get_team_b_updates();
-    map<string, string> gameUpdates = event.get_game_updates();
+    std::map<string, string> teamAUpdates = event.get_team_a_updates();
+    std::map<string, string> teamBUpdates = event.get_team_b_updates();
+    std::map<string, string> gameUpdates = event.get_game_updates();
 
     teamAGoals = std::stoi(teamAUpdates["goals"]);
     teamAPosession = teamAUpdates["possession"];
@@ -30,8 +29,15 @@ void Game::updateGame(string body)
     teamBPosession = teamBUpdates["possession"];
 
     // update events
-    events.push_back(event.get_event_as_vector());
+    vector<string> eventToPush;
 
+    eventToPush.push_back(std::to_string(event.get_time()));
+    eventToPush.push_back(event.get_name());
+    eventToPush.push_back(event.get_discription());
+    eventToPush.push_back(user);
+    
+
+    events.push_back(eventToPush);
     
 
 }

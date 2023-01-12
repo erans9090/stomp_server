@@ -1,5 +1,8 @@
 #pragma once
 
+#include "../include/event.h"
+#include "../include/StompParser.h"
+
 #include <iostream>
 #include <string>
 #include <vector>
@@ -30,7 +33,7 @@ private:
 public:
     Game();
     Game(string teamA, string teamB);
-    void updateGame(string updaes);
+    void updateGame(string updaes,string user);
     void summerizeGame(string userName,string fileName);
 
 };

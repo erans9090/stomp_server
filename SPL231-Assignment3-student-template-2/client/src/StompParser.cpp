@@ -3,8 +3,7 @@
 #include <unordered_map>
 #include <map>
 #include <string>
-#include <nlohmann/json.hpp>
-#include "../include/event.h"
+#include "../include/json.hpp"
 
 StompParser::StompParser() {}
 
@@ -58,13 +57,13 @@ std::string StompParser::getStringFromMap(std::map<std::string, std::string> map
         result += "    " + it->first + ":" + it->second;
     }
 }
-Event StompParser::parseEvent(string body)
+Event StompParser::parseEvent(std::string body)
 {
     nlohmann::json event = nlohmann::json::parse(body);
 
     //use the code from even.cpp parse events for one event
-    std::string team_a_name = data["team a"];
-    std::string team_b_name = data["team b"];
+    std::string team_a_name = event["team a"];
+    std::string team_b_name = event["team b"];
 
     std::string name = event["event name"];
     int time = event["time"];

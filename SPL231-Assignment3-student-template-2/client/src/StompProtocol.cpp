@@ -35,7 +35,7 @@ std::string StompProtocol::handleStompMessageFromServer(string message)
     else if (command == "MESSAGE")
     {
         std::string gameName = parsedResponse["destination"];
-        user.updateGame(gameName, parsedResponse["body"]);
+        user.updateGame(gameName, parsedResponse["body"],parsedResponse["user"]);
     } 
 
     // return the output:

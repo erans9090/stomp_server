@@ -125,7 +125,7 @@ std::string User::getReceiptOutput(int receiptId)
     return receiptIdToMessage[receiptId];
 }
 
-void User::updateGame(string gameName, string body)
+void User::updateGame(string gameName, string body,string user)
 {
     if(games.find(gameName) == games.end())
     {
@@ -133,7 +133,7 @@ void User::updateGame(string gameName, string body)
     }
     else
     {
-        games[gameName].updateGame(body);
+        games[gameName].updateGame(body,user);
     }
 }
 void User::send(string message)
