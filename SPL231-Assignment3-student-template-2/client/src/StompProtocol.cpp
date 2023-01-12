@@ -114,20 +114,19 @@ string StompProtocol::handleReport(std::vector<std::string> parsedCommand)
     string teamB = gameEvents.team_b_name;
     for (Event& e : gameEvents.events)
     {
-        // map<string,string> genral_game_updates = e.get_game_updates();
-        // map<string,string> team_a_updates = e.get_team_a_updates();
-        // map<string,string> team_b_updates = e.get_team_b_updates();
+        map<string,string> genral_game_updates = e.get_game_updates();
+        map<string,string> team_a_updates = e.get_team_a_updates();
+        map<string,string> team_b_updates = e.get_team_b_updates();
         string output = "SEND\ndestination:/" + parsedCommand.at(2) +
                         "user: " + user.getUserName() + "\n" +
                         "teamA: " + teamA + "\n" + 
                         "teamB: " + teamB + "\n" +
                         "time: " + std::to_string(e.get_time()) + "\n" +
                         "event name :" + e.get_name() + "\n" +
-                        // "general game updates: " + e.get_game_updates() + "\n" +
-                        // "team a updates: " + e.get_team_a_updates() + "\n" +
-                        // "team b updates: " + e.get_team_b_updates() + "\n"+
+                        "general game updates: \n" + StompParser::getStringFromMap(e.get_game_updates()) + "\n" +
+                        "team a updates: \n" + StompParser::getStringFromMap(e.get_team_a_updates()) + "\n" +
+                        "team b updates: \n" + StompParser::getStringFromMap(e.get_team_b_updates()) + "\n" +
                         "description: " + e.get_discription() + '\0';
-        // parse team x updates needed??
         user.send(output);
     }
 

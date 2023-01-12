@@ -1,6 +1,7 @@
 #include "../include/StompParser.h"
 #include <iostream>
 #include <unordered_map>
+#include <map>
 #include <string>
 
 StompParser::StompParser() {}
@@ -43,5 +44,11 @@ std::vector<std::string> StompParser::parseCommand(const std::string& command, c
     return result;
 }
 
-
+std::string StompParser::getStringFromMap(std::map<std::string, std::string> map) 
+{
+    std::string result;
+    for (auto it = map.begin(); it != map.end(); ++it) {
+        result += "    " + it->first + ":" + it->second;
+    }
+}
 
