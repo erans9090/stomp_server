@@ -67,7 +67,7 @@ public class StompProtocol<T> implements StompMessagingProtocol<T>{
 
                 //verify:
                 if(isConnected) //the user already logged in:
-                    response = "ERROR\nmessage:The client is already logged in, log out before trying again\n\n" + '\0';
+                    response = "ERROR\nmessage:The client is already logged in, log out before trying again\n\n" + '\u0000';
                 else
                     response = connections.verifyConnection(userName, password, connectionId);
                 
@@ -86,7 +86,7 @@ public class StompProtocol<T> implements StompMessagingProtocol<T>{
                 // check if the subscription subscribed to the channel
                 // if not, send error message
                 if(!isConnected){
-                    response = "ERROR\nmessage:You are not logged in\n\n" + '\0';
+                    response = "ERROR\nmessage:You are not logged in\n\n" + '\u0000';
                     break;
                 }
 
@@ -121,7 +121,7 @@ public class StompProtocol<T> implements StompMessagingProtocol<T>{
                 break;
             
             default:
-                response = "ERROR\nmessage:Wrong command\n\n" + '\0';
+                response = "ERROR\nmessage:Wrong command\n\n" + '\u0000';
                 // send error message
                 break;
         }

@@ -14,12 +14,11 @@ void KeyboardReader::Run()
     while(!shouldTerminate)
     {
         // get a command from keyboard:
-        std::cout << "Please enter command" << std::endl;
+        std::cout << ">>> Enter a command:" << std::endl;
 
         const short bufsize = 1024;
         char buf[bufsize];
         std::cin.getline(buf, bufsize);
-        std::cout << "nevermind" << std::endl;
 
 		std::string line(buf);
 		int len=line.length();

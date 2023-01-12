@@ -18,7 +18,7 @@ std::string StompProtocol::handleStompMessageFromServer(string message)
     std::string output = "";
 
     // handle the message:
-
+    
 
     // return the output:
     return output;
@@ -66,14 +66,12 @@ string StompProtocol::handleLogin(std::vector<std::string> parsedCommand)
     // send error if user is already logged in
     if(user.isConnected())
     {
-        return "ERROR\nmessage:User is already logged in\n\n\0";
+        return "ERROR\nmessage:User is already logged in\n\n" + '\0';
     }
     
     user.setConnected(parsedCommand);
-    SocketReader socketReader(*this, user);
-    std::thread socketThread(&SocketReader::Run, &socketReader);
 
-    return "CONNECT\naccept-version:1.2\nhost:stomp.cs.bgu.ac.il\nlogin:" + user.getUserName() + "\npasscode:" + user.getPassword() + "\n\n";
+    return "CONNECT\naccept-version:1.2\nhost:stomp.cs.bgu.ac.il\nlogin:" + user.getUserName() + "\npasscode:" + user.getPassword() + "\n\n" + '\0';
 }
 
 string StompProtocol::handleLogout(std::vector<std::string> parsedCommand)

@@ -46,7 +46,7 @@ public class ConnectionsImpl<T> implements Connections<T> {
 
         // if subscription is not subscribed to the channel send Error message
         if (!joinedToGame) {
-            String error = "ERROR\nmessage: You are not subscribed to this channel\n\n\0";
+            String error = "ERROR\nmessage: You are not subscribed to this channel\n\n" + '\u0000';
             send(connectionId, (T)error);
             return;
         }
@@ -60,7 +60,7 @@ public class ConnectionsImpl<T> implements Connections<T> {
                 continue;
             }
             
-            String response = "MESSAGE\nsubscription:" + fromSubId + "\nmessage-id:" + messageIdMaker++ + "\ndestination:" + game + "\n" + (String)msg + "\n\0";
+            String response = "MESSAGE\nsubscription:" + fromSubId + "\nmessage-id:" + messageIdMaker++ + "\ndestination:" + game + "\n" + (String)msg + "\n" + '\u0000';
             user.send(response);
             
         }
@@ -72,7 +72,7 @@ public class ConnectionsImpl<T> implements Connections<T> {
         User userToDisconnect = connectionIdToUser.get(connectionId);
 
         // send receipt to user:
-        String receipt = "RECEIPT\nreceipt-id:" + receiptId + "\n\n\0";
+        String receipt = "RECEIPT\nreceipt-id:" + receiptId + "\n\n" + '\u0000';
         send(connectionId, (T)receipt);
 
         //unsubscribe from all games:
@@ -102,7 +102,7 @@ public class ConnectionsImpl<T> implements Connections<T> {
         // remove user from game's users list
         String game = user.getGame(subId);
         if(game == null) {
-            return "ERROR\nmessage: You are not subscribed to this channel\n\n\0";
+            return "ERROR\nmessage: You are not subscribed to this channel\n\n" + '\u0000';
         }
         gameToUsers.get(game).remove(user);
 
@@ -110,7 +110,7 @@ public class ConnectionsImpl<T> implements Connections<T> {
         user.removeGame(subId);
 
 
-        return "RECEIPT\nreceipt-id:" + receiptId + "\n\n\0";
+        return "RECEIPT\nreceipt-id:" + receiptId + "\n\n" + '\u0000';
     }
 
     public void addGame(String game) {
@@ -133,11 +133,11 @@ public class ConnectionsImpl<T> implements Connections<T> {
             connectionIdToUser.get(connectionId).addGame(game, subId);
         
             // send SUBSCRIBED message to the client
-            String subscribed = "RECEIPT\nreceipt-id:" + receiptId + "\n\n\0";
+            String subscribed = "RECEIPT\nreceipt-id:" + receiptId + "\n\n" + '\u0000';
             return subscribed;
         }
         else { // user is already subscribed to game
-            return "ERROR\nmessage: You are already subscribed to this channel\n\n\0";
+            return "ERROR\nmessage: You are already subscribed to this channel\n\n" + '\u0000';
         }
 
     }
@@ -160,10 +160,10 @@ public class ConnectionsImpl<T> implements Connections<T> {
 
                 // password is wrong
                 if(!nameToUser.get(userName).getPassword().equals(password)) {
-                    return "ERROR\nmessage: Wrong password\n\n\0";
+                    return "ERROR\nmessage: Wrong password\n\n" + '\u0000';
                 }
                 else if (nameToUser.get(userName).isConnected()) { // user is already connected
-                    return "ERROR\nmessage: User is already connected\n\n\0";
+                    return "ERROR\nmessage: User is already connected\n\n" + '\u0000';
                 }
                 else { // user is not connected
                     User user = new User(userName, password, connectionIdToUser.get(id).getConnectionHandler(),id);
