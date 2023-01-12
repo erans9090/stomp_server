@@ -150,7 +150,9 @@ void User::send(string message)
         }
 }
 
-string User::summreizeGame(string gameName)
+void User::summreizeGame(string gameName,string userName,string fileName)
 {
-    return games[gameName].summreizeGame();
+    string completePath = ""; //TODO
+    fileName = completePath + fileName;
+    games[gameName].summerizeGame(userName,fileName);
 }

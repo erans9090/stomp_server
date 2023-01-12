@@ -137,8 +137,13 @@ string StompProtocol::handleSummary(std::vector<std::string> parsedCommand)
 {
     // assuming the game stats updated proprly
     string gameName = parsedCommand.at(1);
+    string userName = parsedCommand.at(2);
+    string fileName = parsedCommand.at(3);
+    
+    // print? write into a file?
+    user.summreizeGame(gameName,userName,fileName);
 
-    user.printGameSummary(user.summreizeGame(gameName));
+
 
     return "";
 } 

@@ -47,7 +47,7 @@ class User
         string getReceiptOutput(int receiptId);
         void updateGame(string gameName, std::unordered_map<std::string, std::string> body);
         void send(string message);
-        string summreizeGame(string gameName);
+        void summreizeGame(string gameName,string userName,string fileName);
         
 
         // void addGame(std::vector<std::string> game);

@@ -22,3 +22,10 @@ updates:
 
     TODO
     4.1 make sure summarizeGame works
+    4.2 i think the best way is to change the events in game into vector<events>
+    would be much elegant but need some work 
+    it's needed becouse summery must be done according to the user how posted them
+    i used D.S solution, added to the events in game (vector<vector<string>>) another slot user
+    to save when reciving massage
+    4.3 user build full path - TODO
+    4.4 in game - maybe write directly to the file is more efficient

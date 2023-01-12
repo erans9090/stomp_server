@@ -23,13 +23,13 @@ private:
     string teamBGoals;
     string teamBPosession;
 
-    vector<vector<string>> events; // [[time, eventName, description], [time, eventName, description], ...]
+    vector<vector<string>> events; // [[time, eventName, description, user], [time, eventName, description, user], ...]
     
 public:
     Game();
     Game(string teamA, string teamB);
     void updateGame(std::unordered_map<std::string, std::string> updaes);
-    string summarizeGame();
+    void summerizeGame(string userName,string fileName);
 
 };
 

@@ -1,5 +1,6 @@
 
 #include "../include/Game.h"
+#include <fstream>
 
 using std::string;
 using std::vector;
@@ -16,14 +17,18 @@ void Game::updateGame(std::unordered_map<std::string, std::string> updates)
 {
 }
 
-string Game::summarizeGame()
+void Game::summerizeGame(string userName,string fileName)
 {
     string output = "";
     string eventsAsString = "";
-    for (vector & v : events)
+    // auto works? why vector doesnt work?
+    for (auto & v : events)
     {
-        eventsAsString += v[0] + " - " + v[1] + ":\n\n" + v[2] + "\n\n";
+        if( userName == v[3]){
+            eventsAsString += v[0] + " - " + v[1] + ":\n\n" + v[2] + "\n\n";
+        }
     }
+    // maybe to write directly to the file
     output = teamA + " vs " + teamB +
             "Game stats: \n" +
             "General stats: \n" +
@@ -35,9 +40,13 @@ string Game::summarizeGame()
             "possession: " + teamBPosession + "%\n" +
             "Game event reports: \n" + 
             eventsAsString + '\0';
-    return output;
 
     // \0 needed?
+
+    std::ofstream outfile;
+    outfile.open(fileName); // opens the file for writing create it if doesnt exists
+    outfile << output; // writes the content to the file
+    outfile.close(); // close the file
 }
 
 /*
