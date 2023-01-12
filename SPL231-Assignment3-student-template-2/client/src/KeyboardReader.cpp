@@ -48,3 +48,17 @@ void KeyboardReader::Run()
     }
   
 }
+
+void KeyboardReader::send(string message)
+{   
+    if(message == "")
+        {
+            std::cout << ">>> Invalid command" << std::endl;
+            continue;
+        }
+        if (!user.getConnectionHandler().sendLine(message)) {
+            std::cout << ">>> Disconnected" << std::endl;
+            std::cout << ">>> EXIT" << std::endl;
+            // shouldTerminate = true;
+        }
+}

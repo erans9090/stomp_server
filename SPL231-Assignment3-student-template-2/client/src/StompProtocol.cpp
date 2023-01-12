@@ -106,14 +106,31 @@ string StompProtocol::handleJoin(std::vector<std::string> parsedCommand)
     return "SUBSCRIBE\ndestination:/" + parsedCommand.at(1) + "\nid:" + std::to_string(user.getSubId()) + "\nreceipt:" + std::to_string(receiptId) + "\n\n";
 }
 
-
 string StompProtocol::handleReport(std::vector<std::string> parsedCommand)
 {
-    // int subId = user.getSubIdOfGame(parsedCommand.at(1));
-    // if(subId == -1)
-    //     return "ERROR\nmessage:User is not subscribed to this game\n\n\0";
-    
-    // return "UNSUBSCRIBE\nid:" + subId + "\nreceipt:" + user.getReceiptId() + "\n\n";
+    names_and_events events = parseEventsFile(parsedCommand.at(1));
+
+    string teamA = events.team_a_name();
+    string teamB = events.team_b_name();
+    vector<event> eventsVector = events.events();
+    for (event e : eventsVector)
+    {
+        map<string,string> genral_game_updates = e.get_game_updates();
+        map<string,string> team_a_updates = e.get_team_a_updates();
+        map<string,string> team_b_updates = e.get_team_b_updates();
+        string output = "SEND\ndestination:/" + parsedCommand.at(2) +
+                        "user: " + user.getUserName() + "\n" +
+                        "teamA: " + teamA + "\n" + 
+                        "teamB: " + teamB + "\n" +
+                        "time: " + std::to_string(e.get_time()) + "\n" +
+                        "event name :" + e.get_event() + "\n" +
+                        "general game updates: " + e.get_game_updates() + "\n" +
+                        "team a updates: " + e.get_team_a_updates() + "\n" +
+                        "team b updates: " + e.get_team_b_updates() + "\n"+
+                        "description: " + e.get_discription() + '\0';
+        // parse team x updates needed??
+        user.send(output);
+    }
 
     return "";
 } 
