@@ -17,3 +17,8 @@ updates:
     
     TODO
     3.1 make sure send works
+
+4. handle summery: user.summarizeGame(),Game.summarizeGame()
+
+    TODO
+    4.1 make sure summarizeGame works

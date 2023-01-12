@@ -27,7 +27,6 @@ void KeyboardReader::Run()
         std::string message = protocol.buildFrameFromKeyboardCommand(line);
         if(message == "")
         {
-            std::cout << ">>> Invalid command" << std::endl;
             continue;
         }
         // TODO ----> delete these comments

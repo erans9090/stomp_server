@@ -4,7 +4,6 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
-#include "../include/Event.h"
 
 
 using std::string;
@@ -24,7 +23,7 @@ private:
     string teamBGoals;
     string teamBPosession;
 
-    vector<Event> events; // [[time, eventName, description], [time, eventName, description], ...]
+    vector<vector<string>> events; // [[time, eventName, description], [time, eventName, description], ...]
     
 public:
     Game();
