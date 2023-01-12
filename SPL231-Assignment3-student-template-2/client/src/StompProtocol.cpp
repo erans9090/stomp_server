@@ -8,20 +8,30 @@ StompProtocol::StompProtocol(User &_user) : user(_user)
     parser = StompParser(); 
 }
 
-std::string StompProtocol::parseMessage(string message)
+std::string StompProtocol::handleStompMessageFromServer(string message)
 {
-    std::unordered_map<std::string, std::string> parrsedMessage = parser.parse_stomp_message(message);
-    return handleMessage(parrsedMessage);
+    // parse the message:
+    std::unordered_map<std::string, std::string> parsedCommand = parser.parse_stomp_message(message);
+    std::string command = parsedCommand["title"];
+    std::string output = "";
+
+    // handle the message:
+
+
+    // return the output:
+    return output;
 }
 
-string StompProtocol::handleMessage(std::unordered_map<std::string, std::string> parrsedMessage, User &user)
+
+string StompProtocol::buildFrameFromKeyboardCommand(std::string command)
 {
-    std::string command = parrsedMessage["title"];
+    std::vector<std::string> parsedCommand = parser.parseCommand(command);
+    std::string command = parsedCommand.at(0);
     std::string output = "";
 
     if(command == "login") 
     {
-        output = handleLogin(parrsedMessage);
+        output = handleLogin(parsedCommand);
     } 
     else if (command == "logout")
     {
@@ -48,37 +58,45 @@ string StompProtocol::handleMessage(std::unordered_map<std::string, std::string>
     return output;
 }
 
-
-
-
-
-string StompProtocol::handleLogin(std::unordered_map<std::string, std::string> parrsedMessage)
+string StompProtocol::handleLogin(std::vector<std::string> parsedCommand)
 {
-    return "CONNECT\naccept-version:1.2\nhost:stomp.cs.bgu.ac.il\nlogin:" + parrsedMessage["name"] + "\npasscode:" + parrsedMessage["npasscode"] + "\n\n" + '\0';
-} 
 
-string StompProtocol::handleLogout(std::unordered_map<std::string, std::string> parrsedMessage)
-{
-    return "";
-} 
+    // send error if user is already logged in
+    if(user.isConnected())
+    {
+        return "ERROR\nmessage:User is already logged in\n\n\0"
+    }
+    
+    user.setConnected(parsedCommand);
 
-string StompProtocol::handleJoin(std::unordered_map<std::string, std::string> parrsedMessage)
-{
-    return "";
-} 
+    return "CONNECT\naccept-version:1.2\nhost:stomp.cs.bgu.ac.il\nlogin:" + user.getUsername() + "\npasscode:" + user.getPassword() + "\n\n";
 
-
-string StompProtocol::handleReport(std::unordered_map<std::string, std::string> parrsedMessage)
+string StompProtocol::handleLogout(std::vector<std::string> parsedCommand)
 {
     return "";
 } 
 
-string StompProtocol::handleSummary(std::unordered_map<std::string, std::string> parrsedMessage)
+string StompProtocol::handleJoin(std::vector<std::string> parsedCommand)
+{
+    return "SUBSCRIBE\ndestination:/" + parsedCommand.at(1) + "\nid:" + user.getsubId() + "\nreceipt:" + user.getReceiptId() + "\n\n";
+}
+
+
+string StompProtocol::handleReport(std::vector<std::string> parsedCommand)
+{
+    int subId = user.getSubIdOfGame(parsedCommand.at(1));
+    if(subId == -1)
+        return "ERROR\nmessage:User is not subscribed to this game\n\n\0";
+    
+    return "UNSUBSCRIBE\nid:" + subId + "\nreceipt:" + user.getReceiptId() + "\n\n";
+} 
+
+string StompProtocol::handleSummary(std::vector<std::string> parsedCommand)
 {
     return "";
 } 
 
-string StompProtocol::handleExit(std::unordered_map<std::string, std::string> parrsedMessage)
+string StompProtocol::handleExit(std::vector<std::string> parsedCommand)
 {
     return "";
 } 
@@ -108,3 +126,4 @@ void StompProtocol::setShouldTerminate(bool value)
 {
     shouldTerminate = value;
 }   
+
