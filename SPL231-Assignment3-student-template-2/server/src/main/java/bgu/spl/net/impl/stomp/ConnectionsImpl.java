@@ -56,9 +56,9 @@ public class ConnectionsImpl<T> implements Connections<T> {
         for (User user : gameToUsers.get(game)) {
             
             // make sure not send a message to yourself??
-            if (user.getConnectionId() == connectionId) {
-                continue;
-            }
+            // if (user.getConnectionId() == connectionId) {
+            //     continue;
+            // }
             
             String response = "MESSAGE\nsubscription:" + fromSubId + "\nmessage-id:" + messageIdMaker++ + "\ndestination:" + game + "\n" + (String)msg + "\n" + '\u0000';
             user.send(response);

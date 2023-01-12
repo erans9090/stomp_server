@@ -25,49 +25,18 @@ std::string StompProtocol::handleStompMessageFromServer(string message)
     }
     else if (command == "ERROR")
     {
-        // get the error message:
-        std::string errorMessage = parsedResponse["message"];
-
-        // print the error message:
-        output = errorMessage + "\n";
+        output = parsedResponse["message"];
     }
     else if (command == "RECEIPT")
     {
-        // get the receipt id:
         int receiptId = std::stoi(parsedResponse["receipt-id"]);
         output = user.getReceiptOutput(receiptId);
     } 
     else if (command == "MESSAGE")
     {
-        // // get the game name:
-        // std::string gameName = parsedResponse["destination"];
-        // gameName = gameName.substr(1, gameName.length() - 1);
-
-        // // get the body:
-        // std::string body = parsedResponse["body"];
-
-        // // get the game:
-        // Game *game = user.getGame(gameName);
-
-        // // if the game is not null:
-        // if(game != nullptr)
-        // {
-        //     // update the game:
-        //     game->updateGame(body);
-        // }
-        // else
-        // {
-        //     // create a new game:
-        //     game = new Game(gameName, user.getUserName());
-        //     game->updateGame(body);
-        //     user.addGame(game);
-        // }
-
-        // // print the game:
-        // output = game->toString();
+        std::string gameName = parsedResponse["destination"];
+        user.updateGame(gameName, parsedResponse);
     } 
-    
-    
 
     // return the output:
     return output;
@@ -86,20 +55,19 @@ string StompProtocol::buildFrameFromKeyboardCommand(std::string userCommand)
     } 
     else if (command == "logout")
     {
-
+        output = handleLogout(parsedCommand);
     } 
     else if (command == "join")
     {
-        return "";
-
+        output = handleJoin(parsedCommand);
     } 
     else if (command == "report")
     {
-
+        output = handleReport(parsedCommand);
     } 
     else if (command == "summary")
     {
-
+        output = handleSummary(parsedCommand);
     } 
     else if (command == "exit")
     {
@@ -125,13 +93,15 @@ string StompProtocol::handleLogin(std::vector<std::string> parsedCommand)
 
 string StompProtocol::handleLogout(std::vector<std::string> parsedCommand)
 {
-    return "";
+    user.disconnect();
+    int receiptId = user.getReceiptId("");
+    return "DISCONNECT\nreceipt:" + std::to_string(receiptId) + "\n\n" + '\0';
 } 
 
 string StompProtocol::handleJoin(std::vector<std::string> parsedCommand)
 {
-    // 
-    return "SUBSCRIBE\ndestination:/" + parsedCommand.at(1) + "\nid:" + std::to_string(user.getSubId()) + "\nreceipt:" + std::to_string(user.getReceiptId()) + "\n\n";
+    int receiptId = user.getReceiptId("Joined channel " + parsedCommand.at(1));
+    return "SUBSCRIBE\ndestination:/" + parsedCommand.at(1) + "\nid:" + std::to_string(user.getSubId()) + "\nreceipt:" + std::to_string(receiptId) + "\n\n";
 }
 
 
@@ -151,10 +121,12 @@ string StompProtocol::handleSummary(std::vector<std::string> parsedCommand)
     return "";
 } 
 
+// exits from a game send unsubscribe frame
 string StompProtocol::handleExit(std::vector<std::string> parsedCommand)
 {
     user.unsubscribe(parsedCommand.at(1));
-    return "DISCONNECT\nreceipt:" + std::to_string(user.getReceiptId()) + "\n\n" + '\0';
+    int receiptId = user.getReceiptId("Exited channel " + parsedCommand.at(1));
+    return "DISCONNECT\nreceipt:" + std::to_string(receiptId) + "\n\n" + '\0';
 } 
 
 

@@ -1,8 +1,23 @@
 
-#import "../include/Game.h"
+#include "../include/Game.h"
 
+using std::string;
+using std::vector;
 
-Game::Game(string teamA, string teamB):gameStats(""), generalStats(""), teamA(teamA), teamAStats(0), teamAGoals(0), teamB(teamB), teamBStats(0), teamBGoals(0),gameEventReports()
+Game::Game() : teamA(""), teamB(""), events()
 {
+}
+
+Game::~Game()
+{
+}
+
+Game::Game(string teamA, string teamB) : teamA(teamA),  teamB(teamB), events()
+{
+}
+
+void Game::updateGame(std::unordered_map<std::string, std::string> updates)
+{
+
 }
 

@@ -10,6 +10,7 @@ using std::string;
 using std::vector;
 using std::unordered_map;
 
+
 class User
 {
     private:
@@ -28,7 +29,7 @@ class User
     public:
         User();
         int getSubId();
-        int getReceiptId();
+        int getReceiptId(string receiptOutput);
         string getUserName();
         void setUserName(std::string name);
         string getPassword();
@@ -39,8 +40,11 @@ class User
         void setLoggedIn(bool logedIn);
         ConnectionHandler &getConnectionHandler();
         void unsubscribe(string gameName);
+        void unsubscribeAll();
+        void disconnect();
         void addReceiptIdToMessage(int receiptId, string message);
         string getReceiptOutput(int receiptId);
+        void updateGame(string gameName, std::unordered_map<std::string, std::string> body);
 
         // void addGame(std::vector<std::string> game);
 };

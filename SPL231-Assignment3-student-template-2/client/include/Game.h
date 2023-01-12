@@ -3,29 +3,35 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <unordered_map>
+
 
 using std::string;
+using std::vector;
+using std::unordered_map;
+
 
 class Game
 {
 private:
 
-    string gameStats;
-    string generalStats;
     string teamA;
-    string teamAStats;
     string teamAGoals;
+    string teamAPosession;
+
     string teamB;
-    string teamBStats;
     string teamBGoals;
-    std::vector<string> gameEventReports;
+    string teamBPosession;
 
-
-
+    vector<vector<string>> events; // [[time, eventName, description], [time, eventName, description], ...]
     
 public:
+    Game();
+    ~Game();
+    Game(string teamA, string teamB);
+    void updateGame(std::unordered_map<std::string, std::string> updaes);
+    string summarizeGame();
 
-    Game(string teamA,string teamB);
 };
 
 

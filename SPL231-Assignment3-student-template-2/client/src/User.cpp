@@ -16,9 +16,11 @@ int User::getSubId()
     return subIdMaker++;
 }
 
-int User::getReceiptId()
+int User::getReceiptId(string receiptOutput)
 {
-    return receiptIdMaker++;
+    receiptIdMaker++;
+    receiptIdToMessage[receiptIdMaker] = receiptOutput;
+    return receiptIdMaker;
 }
 
 std::string User::getUserName() 
@@ -85,10 +87,25 @@ ConnectionHandler &User::getConnectionHandler()
     return connectionHandler;
 }
 
-void unsubscribe(string gameName)
+void User::unsubscribe(string gameName)
 {
     games.erase(gameName);
+}
 
+void User::unsubscribeAll()
+{
+    games.clear();
+}
+
+void User::disconnect()
+{
+    connectionHandler.close();
+    isConnectionHandlerConnected = false;
+    isLogedIn = false;
+    games.clear();
+    receiptIdToMessage.clear();
+    userName = "";
+    password = "";
 }
 
 void User::addReceiptIdToMessage(int receiptId, string message)
@@ -99,4 +116,16 @@ void User::addReceiptIdToMessage(int receiptId, string message)
 std::string User::getReceiptOutput(int receiptId)
 {
     return receiptIdToMessage[receiptId];
+}
+
+void User::updateGame(string gameName, std::unordered_map<std::string, std::string> body)
+{
+    if(games.find(gameName) == games.end())
+    {
+        // game not found
+    }
+    else
+    {
+        games[gameName].updateGame(body);
+    }
 }
