@@ -35,7 +35,7 @@ std::string StompProtocol::handleStompMessageFromServer(string message)
     else if (command == "MESSAGE")
     {
         std::string gameName = parsedResponse["destination"];
-        user.updateGame(gameName, parsedResponse);
+        user.updateGame(gameName, parsedResponse["body"]);
     } 
 
     // return the output:
@@ -143,8 +143,6 @@ string StompProtocol::handleSummary(std::vector<std::string> parsedCommand)
     // print? write into a file?
     user.summreizeGame(gameName,userName,fileName);
 
-
-
     return "";
 } 
 
@@ -156,7 +154,7 @@ string StompProtocol::handleExit(std::vector<std::string> parsedCommand)
     return "DISCONNECT\nreceipt:" + std::to_string(receiptId) + "\n\n" + '\0';
 } 
 
-
+//  think this are not needed
 std::vector<string> StompProtocol::splitStringByChar(string s, char div)
 {
     std::vector<string> vector;

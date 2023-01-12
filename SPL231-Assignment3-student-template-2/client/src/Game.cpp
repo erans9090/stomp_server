@@ -1,6 +1,9 @@
 
 #include "../include/Game.h"
 #include <fstream>
+#include "../include/event.h"
+#include "../include/StompParser.h"
+
 
 using std::string;
 using std::vector;
@@ -13,8 +16,24 @@ Game::Game(string teamA, string teamB) : teamA(teamA), teamAGoals(0), teamAPoses
 {
 }
 
-void Game::updateGame(std::unordered_map<std::string, std::string> updates)
+void Game::updateGame(string body)
 {
+    Event &event = StompParser::parseEvent(body);
+    // update game stats
+    map<string, string> teamAUpdates = event.get_team_a_updates();
+    map<string, string> teamBUpdates = event.get_team_b_updates();
+    map<string, string> gameUpdates = event.get_game_updates();
+
+    teamAGoals = std::stoi(teamAUpdates["goals"]);
+    teamAPosession = teamAUpdates["possession"];
+    teamBGoals = std::stoi(teamBUpdates["goals"]);
+    teamBPosession = teamBUpdates["possession"];
+
+    // update events
+    events.push_back(event.get_event_as_vector());
+
+    
+
 }
 
 void Game::summerizeGame(string userName,string fileName)

@@ -4,6 +4,8 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
+#include <map>
+
 
 
 using std::string;
@@ -28,7 +30,7 @@ private:
 public:
     Game();
     Game(string teamA, string teamB);
-    void updateGame(std::unordered_map<std::string, std::string> updaes);
+    void updateGame(string updaes);
     void summerizeGame(string userName,string fileName);
 
 };

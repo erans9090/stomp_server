@@ -125,7 +125,7 @@ std::string User::getReceiptOutput(int receiptId)
     return receiptIdToMessage[receiptId];
 }
 
-void User::updateGame(string gameName, std::unordered_map<std::string, std::string> body)
+void User::updateGame(string gameName, string body)
 {
     if(games.find(gameName) == games.end())
     {

@@ -3,6 +3,8 @@
 #include <unordered_map>
 #include <map>
 #include <string>
+#include <nlohmann/json.hpp>
+#include "../include/event.h"
 
 StompParser::StompParser() {}
 
@@ -23,6 +25,11 @@ std::unordered_map<std::string, std::string> StompParser::parse_stomp_message(st
                 std::string value = line.substr(pos + 1);
                 result[key] = value;
             }
+
+        }
+        // add body
+        if (data.size() > 0) {
+            result["body"] = data;
         }
     }
     result["title"] = title;
@@ -51,4 +58,48 @@ std::string StompParser::getStringFromMap(std::map<std::string, std::string> map
         result += "    " + it->first + ":" + it->second;
     }
 }
+Event StompParser::parseEvent(string body)
+{
+    nlohmann::json event = nlohmann::json::parse(body);
 
+    //use the code from even.cpp parse events for one event
+    std::string team_a_name = data["team a"];
+    std::string team_b_name = data["team b"];
+
+    std::string name = event["event name"];
+    int time = event["time"];
+    std::string description = event["description"];
+    std::map<std::string, std::string> game_updates;
+    std::map<std::string, std::string> team_a_updates;
+    std::map<std::string, std::string> team_b_updates;
+    for (auto &update : event["general game updates"].items())
+    {
+        if (update.value().is_string())
+            game_updates[update.key()] = update.value();
+        else
+            game_updates[update.key()] = update.value().dump();
+    }
+
+    for (auto &update : event["team a updates"].items())
+    {
+        if (update.value().is_string())
+            team_a_updates[update.key()] = update.value();
+        else
+            team_a_updates[update.key()] = update.value().dump();
+    }
+
+    for (auto &update : event["team b updates"].items())
+    {
+        if (update.value().is_string())
+            team_b_updates[update.key()] = update.value();
+        else
+            team_b_updates[update.key()] = update.value().dump();
+    }
+    
+    return Event(team_a_name, team_b_name, name, time, game_updates, team_a_updates, team_b_updates, description);
+
+}
+
+
+
+    
