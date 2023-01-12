@@ -149,3 +149,8 @@ void User::send(string message)
             // shouldTerminate = true;
         }
 }
+
+string User::summreizeGame(string gameName)
+{
+    return games[gameName].summreizeGame();
+}

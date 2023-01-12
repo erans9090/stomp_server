@@ -16,13 +16,35 @@ void Game::updateGame(std::unordered_map<std::string, std::string> updates)
 {
 }
 
+string Game::summarizeGame()
+{
+    for (auto event : events)
+    {
+        // output += event.toString();
+    }
+    string output = teamA + " vs " + teamB +
+                    "Game stats: \n" +
+                    "General stats: \n" +
+                    teamA + " stats: \n" +
+                    "goals: " + teamAGoals + "\n" +
+                    "possession: " + teamAPosession + "%\n" +
+                    teamB + " stats: \n" +
+                    "goals: " + teamBGoals + "\n" +
+                    "possession: " + teamBPosession + "%\n" +
+                    "Game event reports: \n";
+}
 
-//     string teamA;
-//     string teamAGoals;
-//     string teamAPosession;
+/*
+germany vs japan
+Game stats:
+General stats:
+active: false
+before halftime: false
+germany stats:
+goals: 1
+possession: 51%
+japan stats:
+goals: 2
+possession: 49%
 
-//     string teamB;
-//     string teamBGoals;
-//     string teamBPosession;
-
-//     vector<vector<string>> events; 
+*/

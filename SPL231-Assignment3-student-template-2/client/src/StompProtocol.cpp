@@ -135,6 +135,11 @@ string StompProtocol::handleReport(std::vector<std::string> parsedCommand)
 
 string StompProtocol::handleSummary(std::vector<std::string> parsedCommand)
 {
+    // assuming the game stats updated proprly
+    string gameName = parsedCommand.at(1);
+
+    user.printGameSummary(user.summreizeGame(gameName));
+
     return "";
 } 
 
