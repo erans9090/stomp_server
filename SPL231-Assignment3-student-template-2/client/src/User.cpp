@@ -87,6 +87,12 @@ ConnectionHandler &User::getConnectionHandler()
     return connectionHandler;
 }
 
+void User::subscribe(string gameName)
+{
+    std::vector<string,string> parsedNames = StompParser::parseCommand(gameName,'_')
+    games[gameName] = Game(parsedNames.at(0),parsedNames.at(1));
+}
+
 void User::unsubscribe(string gameName)
 {
     games.erase(gameName);

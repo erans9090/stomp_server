@@ -101,6 +101,7 @@ string StompProtocol::handleLogout(std::vector<std::string> parsedCommand)
 
 string StompProtocol::handleJoin(std::vector<std::string> parsedCommand)
 {
+    user.subscribe(parsedCommand.at(1));
     int receiptId = user.getReceiptId("Joined channel " + parsedCommand.at(1));
     return "SUBSCRIBE\ndestination:/" + parsedCommand.at(1) + "\nid:" + std::to_string(user.getSubId()) + "\nreceipt:" + std::to_string(receiptId) + "\n\n";
 }

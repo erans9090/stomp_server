@@ -39,6 +39,7 @@ class User
         bool isLoggedIn();
         void setLoggedIn(bool logedIn);
         ConnectionHandler &getConnectionHandler();
+        void subscribe(string gameName);
         void unsubscribe(string gameName);
         void unsubscribeAll();
         void disconnect();
