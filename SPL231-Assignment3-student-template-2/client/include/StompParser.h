@@ -10,7 +10,7 @@ private:
 
 public:
     StompParser();
-    std::unordered_map<std::string, std::string> parse_stomp_message(std::string& message);
-    std::vector<std::string> parseCommand(const std::string& command);
+    static std::unordered_map<std::string, std::string> parse_stomp_message(std::string& message);
+    static std::vector<std::string> parseCommand(const std::string& command, char del);
 
 };

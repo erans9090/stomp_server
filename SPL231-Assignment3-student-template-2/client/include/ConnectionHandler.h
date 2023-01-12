@@ -14,6 +14,8 @@ private:
 	tcp::socket socket_;
 
 public:
+
+	ConnectionHandler();
 	ConnectionHandler(std::string host, short port);
 
 	virtual ~ConnectionHandler();
@@ -47,5 +49,8 @@ public:
 
 	// Close down the connection properly.
 	void close();
+
+	ConnectionHandler& operator=(const ConnectionHandler& other);
+
 
 }; //class ConnectionHandler

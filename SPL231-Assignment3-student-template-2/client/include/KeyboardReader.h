@@ -9,10 +9,10 @@ class KeyboardReader
 public:
     KeyboardReader(StompProtocol &protocol, User &_user);
     void Run();
-    void login(ConnectionHandler &_connectionHandler);
 
 private:
-    ConnectionHandler &connectionHandler;
-    bool shouldTerminate;
     StompProtocol &protocol;
+    User &user;
+    bool shouldTerminate;
+
 };

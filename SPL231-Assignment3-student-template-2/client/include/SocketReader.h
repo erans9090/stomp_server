@@ -2,16 +2,18 @@
 
 #include "../include/ConnectionHandler.h"
 #include "../include/StompProtocol.h"
+#include "../include/User.h"
 
 class SocketReader
 {
 public:
-    SocketReader(ConnectionHandler &connectionHandler, StompProtocol &protocol);
+
+    SocketReader(StompProtocol &protocol,User &user);
     void Run();
 
 private:
-    ConnectionHandler &connectionHandler;
     bool shouldTerminate;
     StompProtocol &protocol;
+    User &user;
 
 };

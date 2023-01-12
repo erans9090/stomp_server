@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-User::User() : receiptIdMaker(0), subIdMaker(0), userName(""), password(""), connected(false), games(),connectionHandler()
+User::User() : receiptIdMaker(0), subIdMaker(0), userName(""), password(""), connected(false), games(), connectionHandler()
 {
 }
 
@@ -43,11 +43,11 @@ bool User::isConnected()
     return connected;
 }
 
-void User::setConnected(std::vector<std::string> parsedCommand)
+void User::setConnected(std::vector<std::string> &parsedCommand)
 {
 
     // maybe host is -  std::string host = "stomp.cs.bgu.ac.il";
-    std::vector<std::string> host_port = StompParser::parseCommand(parsedCommand.at(1));
+    std::vector<std::string> host_port = StompParser::parseCommand(parsedCommand.at(1),':');
 	std::string host = host_port.at(0);
 	short port = std::stoi(host_port.at(1));
 
@@ -56,7 +56,7 @@ void User::setConnected(std::vector<std::string> parsedCommand)
 
     if (!connectionHandler.connect()) {
         std::cerr << "ERROR: can't connect to " << host << ":" << port << std::endl;
-        connectionHandler = nullptr;
+        // connectionHandler = nullptr;
     }
     else{
         connected = true;
@@ -65,3 +65,7 @@ void User::setConnected(std::vector<std::string> parsedCommand)
     }
 }
 
+ConnectionHandler &User::getConnectionHandler()
+{
+    return connectionHandler;
+}

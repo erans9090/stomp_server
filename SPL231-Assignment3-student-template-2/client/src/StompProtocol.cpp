@@ -5,7 +5,6 @@ using std::string;
 
 StompProtocol::StompProtocol(User &_user) : user(_user)
 {
-    parser = StompParser(); 
 }
 
 std::string StompProtocol::handleStompMessageFromServer(string message)
@@ -25,7 +24,7 @@ std::string StompProtocol::handleStompMessageFromServer(string message)
 
 string StompProtocol::buildFrameFromKeyboardCommand(std::string command)
 {
-    std::vector<std::string> parsedCommand = parser.parseCommand(command);
+    std::vector<std::string> parsedCommand = parser.parseCommand(command,' ');
     std::string command = parsedCommand.at(0);
     std::string output = "";
 
@@ -64,12 +63,13 @@ string StompProtocol::handleLogin(std::vector<std::string> parsedCommand)
     // send error if user is already logged in
     if(user.isConnected())
     {
-        return "ERROR\nmessage:User is already logged in\n\n\0"
+        return "ERROR\nmessage:User is already logged in\n\n\0";
     }
     
     user.setConnected(parsedCommand);
 
-    return "CONNECT\naccept-version:1.2\nhost:stomp.cs.bgu.ac.il\nlogin:" + user.getUsername() + "\npasscode:" + user.getPassword() + "\n\n";
+    return "CONNECT\naccept-version:1.2\nhost:stomp.cs.bgu.ac.il\nlogin:" + user.getUserName() + "\npasscode:" + user.getPassword() + "\n\n";
+}
 
 string StompProtocol::handleLogout(std::vector<std::string> parsedCommand)
 {
@@ -78,17 +78,20 @@ string StompProtocol::handleLogout(std::vector<std::string> parsedCommand)
 
 string StompProtocol::handleJoin(std::vector<std::string> parsedCommand)
 {
-    return "SUBSCRIBE\ndestination:/" + parsedCommand.at(1) + "\nid:" + user.getsubId() + "\nreceipt:" + user.getReceiptId() + "\n\n";
+    // 
+    return "SUBSCRIBE\ndestination:/" + parsedCommand.at(1) + "\nid:" + std::to_string(user.getSubId()) + "\nreceipt:" + std::to_string(user.getReceiptId()) + "\n\n";
 }
 
 
 string StompProtocol::handleReport(std::vector<std::string> parsedCommand)
 {
-    int subId = user.getSubIdOfGame(parsedCommand.at(1));
-    if(subId == -1)
-        return "ERROR\nmessage:User is not subscribed to this game\n\n\0";
+    // int subId = user.getSubIdOfGame(parsedCommand.at(1));
+    // if(subId == -1)
+    //     return "ERROR\nmessage:User is not subscribed to this game\n\n\0";
     
-    return "UNSUBSCRIBE\nid:" + subId + "\nreceipt:" + user.getReceiptId() + "\n\n";
+    // return "UNSUBSCRIBE\nid:" + subId + "\nreceipt:" + user.getReceiptId() + "\n\n";
+
+    return "";
 } 
 
 string StompProtocol::handleSummary(std::vector<std::string> parsedCommand)

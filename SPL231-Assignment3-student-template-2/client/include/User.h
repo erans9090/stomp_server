@@ -21,14 +21,16 @@ class User
 
     public:
         User();
-        int getsubId();
+        int getSubId();
         int getReceiptId();
         string getUserName();
         void setUserName(std::string name);
         string getPassword();
         void setPassword(std::string password);
         bool isConnected();
-        void setConnected(bool connected);
+        void setConnected(std::vector<std::string> &parsedCommand);
+        ConnectionHandler &getConnectionHandler();
+
 
         // void addGame(std::vector<std::string> game);
 };

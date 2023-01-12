@@ -1,6 +1,6 @@
 #include "../include/KeyboardReader.h"
 
-KeyboardReader::KeyboardReader(StompProtocol &protocol, User &_user): connectionHandler(), shouldTerminate(false), protocol(protocol)
+KeyboardReader::KeyboardReader(StompProtocol &protocol, User &_user): protocol(protocol),user(_user),shouldTerminate(false)
 {
 
 }
@@ -23,7 +23,7 @@ void KeyboardReader::Run()
         // TODO ----> delete these comments
         //execute sendLine only!! if the command is correct and frame was built
         //for example if there was an error on client side, createframe will return "" and sendLIne wont be executed
-        if (!connectionHandler.sendLine(message)) {
+        if (!user.getConnectionHandler().sendLine(message)) {
             std::cout << ">>> Disconnected" << std::endl;
             std::cout << ">>> EXIT" << std::endl;
             // shouldTerminate = true;
@@ -33,9 +33,4 @@ void KeyboardReader::Run()
         std::cout << message <<  std::endl;
     }
   
-}
-
-void keyboardReader::login(ConnectionHandler &_connectionHandler)
-{
-    connectionHandler = _connectionHandler;
 }
