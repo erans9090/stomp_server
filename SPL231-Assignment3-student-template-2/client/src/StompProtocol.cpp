@@ -108,25 +108,24 @@ string StompProtocol::handleJoin(std::vector<std::string> parsedCommand)
 
 string StompProtocol::handleReport(std::vector<std::string> parsedCommand)
 {
-    names_and_events events = parseEventsFile(parsedCommand.at(1));
+    names_and_events gameEvents = parseEventsFile(parsedCommand.at(1));
 
-    string teamA = events.team_a_name();
-    string teamB = events.team_b_name();
-    vector<event> eventsVector = events.events();
-    for (event e : eventsVector)
+    string teamA = gameEvents.team_a_name;
+    string teamB = gameEvents.team_b_name;
+    for (Event& e : gameEvents.events)
     {
-        map<string,string> genral_game_updates = e.get_game_updates();
-        map<string,string> team_a_updates = e.get_team_a_updates();
-        map<string,string> team_b_updates = e.get_team_b_updates();
+        // map<string,string> genral_game_updates = e.get_game_updates();
+        // map<string,string> team_a_updates = e.get_team_a_updates();
+        // map<string,string> team_b_updates = e.get_team_b_updates();
         string output = "SEND\ndestination:/" + parsedCommand.at(2) +
                         "user: " + user.getUserName() + "\n" +
                         "teamA: " + teamA + "\n" + 
                         "teamB: " + teamB + "\n" +
                         "time: " + std::to_string(e.get_time()) + "\n" +
-                        "event name :" + e.get_event() + "\n" +
-                        "general game updates: " + e.get_game_updates() + "\n" +
-                        "team a updates: " + e.get_team_a_updates() + "\n" +
-                        "team b updates: " + e.get_team_b_updates() + "\n"+
+                        "event name :" + e.get_name() + "\n" +
+                        // "general game updates: " + e.get_game_updates() + "\n" +
+                        // "team a updates: " + e.get_team_a_updates() + "\n" +
+                        // "team b updates: " + e.get_team_b_updates() + "\n"+
                         "description: " + e.get_discription() + '\0';
         // parse team x updates needed??
         user.send(output);

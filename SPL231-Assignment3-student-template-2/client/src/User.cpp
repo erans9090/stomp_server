@@ -136,3 +136,16 @@ void User::updateGame(string gameName, std::unordered_map<std::string, std::stri
         games[gameName].updateGame(body);
     }
 }
+void User::send(string message)
+{   
+    if(message == "")
+        {
+            std::cout << ">>> Invalid command" << std::endl;
+            return;
+        }
+        if (!connectionHandler.sendLine(message)) {
+            std::cout << ">>> Disconnected" << std::endl;
+            std::cout << ">>> EXIT" << std::endl;
+            // shouldTerminate = true;
+        }
+}

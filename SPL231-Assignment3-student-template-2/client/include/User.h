@@ -46,6 +46,8 @@ class User
         void addReceiptIdToMessage(int receiptId, string message);
         string getReceiptOutput(int receiptId);
         void updateGame(string gameName, std::unordered_map<std::string, std::string> body);
+        void send(string message);
+        
 
         // void addGame(std::vector<std::string> game);
 };
