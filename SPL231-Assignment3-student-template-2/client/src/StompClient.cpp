@@ -14,7 +14,7 @@ int main(int argc, char *argv[]) {
 	std::cout << "Starting client" << std::endl;
 	
 	
-	User user();
+	User user;
 
 	StompProtocol protocol(user);
 

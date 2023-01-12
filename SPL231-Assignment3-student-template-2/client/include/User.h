@@ -10,13 +10,14 @@ using std::vector;
 class User
 {
     private:
-        int subIdMaker;
         int receiptIdMaker;
+        int subIdMaker;
         string userName;
         string password;
         bool connected;
         vector<vector<string>> games;
         ConnectionHandler connectionHandler;
+
 
 
     public:

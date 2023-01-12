@@ -22,9 +22,9 @@ std::string StompProtocol::handleStompMessageFromServer(string message)
 }
 
 
-string StompProtocol::buildFrameFromKeyboardCommand(std::string command)
+string StompProtocol::buildFrameFromKeyboardCommand(std::string userCommand)
 {
-    std::vector<std::string> parsedCommand = parser.parseCommand(command,' ');
+    std::vector<std::string> parsedCommand = parser.parseCommand(userCommand,' ');
     std::string command = parsedCommand.at(0);
     std::string output = "";
 

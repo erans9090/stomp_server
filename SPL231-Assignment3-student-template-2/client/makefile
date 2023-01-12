@@ -21,7 +21,7 @@ bin/StompClient.o: src/StompClient.cpp
 bin/StompProtocol.o: src/StompProtocol.cpp
 	g++ $(CFLAGS) -o bin/StompProtocol.o src/StompProtocol.cpp
 
-bin/StompProtocol.o: src/StompParser.cpp
+bin/StompParser.o: src/StompParser.cpp
 	g++ $(CFLAGS) -o bin/StompParser.o src/StompParser.cpp
 
 bin/KeyboardReader.o: src/KeyboardReader.cpp

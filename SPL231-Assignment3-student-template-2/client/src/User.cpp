@@ -1,5 +1,6 @@
 #include "../include/User.h"
 #include "../include/StompParser.h"
+#include "../include/ConnectionHandler.h"
 
 #include <string>
 #include <vector>
@@ -52,7 +53,9 @@ void User::setConnected(std::vector<std::string> &parsedCommand)
 	short port = std::stoi(host_port.at(1));
 
     // try to connect to the server:
-    connectionHandler = ConnectionHandler(host, port);
+    connectionHandler.setHostAndPort(host, port);
+    // connectionHandler = ConnectionHandler(host, port);
+
 
     if (!connectionHandler.connect()) {
         std::cerr << "ERROR: can't connect to " << host << ":" << port << std::endl;
