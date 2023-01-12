@@ -17,7 +17,7 @@ void SocketReader::Run()
         }
         
         // parse the response:
-        std::string output = protocol.parseMessage(response);
+        std::string output = protocol.parseStompMessageFromServer(response);
 
 		// print the response:
         std::cout << ">>> Recived from server " << output.length() << " bytes:" << std::endl;

@@ -28,3 +28,18 @@ std::unordered_map<std::string, std::string> StompParser::parse_stomp_message(st
     return result;
 }
 
+std::vector<std::string> StompParser::parseCommand(const std::string& command, char del) {
+    std::vector<std::string> result;
+    std::string current_word;
+    for (const char c : command) {
+        if (c == del) {
+            result.push_back(current_word);
+            current_word.clear();
+        } else {
+            current_word += c;
+        }
+    }
+    result.push_back(current_word);
+    return result;
+}
+
