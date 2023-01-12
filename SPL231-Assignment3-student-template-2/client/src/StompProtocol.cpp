@@ -1,39 +1,46 @@
 #include "../include/StompProtocol.h"
+#include <unordered_map>
 using namespace std;
-
-StompProtocol::StompProtocol() {}
-
 using std::string;
-string StompProtocol::buildMessage(string userCommand) 
+
+StompProtocol::StompProtocol(User &_user) : user(_user)
 {
-    // split the command by spaces and send to the right function:
-    vector<string> parsedCommand = splitStringByChar(userCommand, ' ');
-    string keyword = parsedCommand.at(0);
-    string output = "";
-    if(keyword == "login") 
+    parser = StompParser(); 
+}
+
+std::string StompProtocol::parseMessage(string message)
+{
+    std::unordered_map<std::string, std::string> parrsedMessage = parser.parse_stomp_message(message);
+    return handleMessage(parrsedMessage);
+}
+
+string StompProtocol::handleMessage(std::unordered_map<std::string, std::string> parrsedMessage, User &user)
+{
+    std::string command = parrsedMessage["title"];
+    std::string output = "";
+
+    if(command == "login") 
     {
-        // login 1.1.1.1:2000 meni films
-        output = handleLogin(parsedCommand);
+        output = handleLogin(parrsedMessage);
+    } 
+    else if (command == "logout")
+    {
 
     } 
-    else if (keyword == "logout")
-    {
-
-    } 
-    else if (keyword == "join")
+    else if (command == "join")
     {
         return "";
 
     } 
-    else if (keyword == "report")
+    else if (command == "report")
     {
 
     } 
-    else if (keyword == "summary")
+    else if (command == "summary")
     {
 
     } 
-    else if (keyword == "exit")
+    else if (command == "exit")
     {
 
     } 
@@ -41,45 +48,37 @@ string StompProtocol::buildMessage(string userCommand)
     return output;
 }
 
-string StompProtocol::parseMessage(string message)
-{
-    vector<string> parsedCommand = splitStringByChar(message, '\n');
-    string keyword = parsedCommand.at(0);
-    string output = "";
-    if(keyword == "CONNECTED") {
-        output = "login successfully";
-    }
-    return output;
-}
 
-string StompProtocol::handleLogin(vector<string> vec)
+
+
+
+string StompProtocol::handleLogin(std::unordered_map<std::string, std::string> parrsedMessage)
 {
-    // login 1.1.1.1:2000 meni films
-    return "CONNECT\naccept-version:1.2\nhost:stomp.cs.bgu.ac.il\nlogin:" + vec.at(2) + "\npasscode:" + vec.at(3) + "\n\n" + '\0';
+    return "CONNECT\naccept-version:1.2\nhost:stomp.cs.bgu.ac.il\nlogin:" + parrsedMessage["name"] + "\npasscode:" + parrsedMessage["npasscode"] + "\n\n" + '\0';
 } 
 
-string StompProtocol::handleLogout(vector<string> vec)
+string StompProtocol::handleLogout(std::unordered_map<std::string, std::string> parrsedMessage)
 {
     return "";
 } 
 
-string StompProtocol::handleJoin(vector<string> vec)
+string StompProtocol::handleJoin(std::unordered_map<std::string, std::string> parrsedMessage)
 {
     return "";
 } 
 
 
-string StompProtocol::handleReport(vector<string> vec)
+string StompProtocol::handleReport(std::unordered_map<std::string, std::string> parrsedMessage)
 {
     return "";
 } 
 
-string StompProtocol::handleSummary(vector<string> vec)
+string StompProtocol::handleSummary(std::unordered_map<std::string, std::string> parrsedMessage)
 {
     return "";
 } 
 
-string StompProtocol::handleExit(vector<string> vec)
+string StompProtocol::handleExit(std::unordered_map<std::string, std::string> parrsedMessage)
 {
     return "";
 } 

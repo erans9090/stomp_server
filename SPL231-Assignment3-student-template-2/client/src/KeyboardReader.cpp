@@ -1,6 +1,6 @@
 #include "../include/KeyboardReader.h"
 
-KeyboardReader::KeyboardReader(ConnectionHandler &connectionHandler, StompProtocol &protocol) : connectionHandler(connectionHandler), shouldTerminate(false), protocol(protocol)
+KeyboardReader::KeyboardReader(StompProtocol &protocol, User &_user): connectionHandler(), shouldTerminate(false), protocol(protocol)
 {
 
 }
@@ -10,15 +10,16 @@ void KeyboardReader::Run()
     while(!shouldTerminate)
     {
         // get a command from keyboard:
-        std::cout << ">>> Enter a command:" << std::endl;
+        std::cout << "Please enter command" << std::endl;
+
         const short bufsize = 1024;
         char buf[bufsize];
         std::cin.getline(buf, bufsize);
 		std::string line(buf);
 		int len=line.length();
 
-        // TODO ----> change name of function
-        std::string message = protocol.buildMessage(line);
+        // protocol get line and the keyboarReader
+        std::string message = protocol.handleMessage(line);
         // TODO ----> delete these comments
         //execute sendLine only!! if the command is correct and frame was built
         //for example if there was an error on client side, createframe will return "" and sendLIne wont be executed
@@ -31,5 +32,10 @@ void KeyboardReader::Run()
         std::cout << ">>> Sent to server " << len+1 << " bytes:" << std::endl;
         std::cout << message <<  std::endl;
     }
-    
+  
+}
+
+void keyboardReader::login(ConnectionHandler &_connectionHandler)
+{
+    connectionHandler = _connectionHandler;
 }

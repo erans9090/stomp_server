@@ -7,8 +7,9 @@
 class KeyboardReader
 {
 public:
-    KeyboardReader(ConnectionHandler &connectionHandler, StompProtocol &protocol);
+    KeyboardReader(StompProtocol &protocol, User &_user);
     void Run();
+    void login(ConnectionHandler &_connectionHandler);
 
 private:
     ConnectionHandler &connectionHandler;

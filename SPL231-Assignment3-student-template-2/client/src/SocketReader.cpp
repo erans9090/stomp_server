@@ -17,13 +17,12 @@ void SocketReader::Run()
         }
         
         // parse the response:
-        response = protocol.parseMessage(response);
-		int len = response.length();
+        std::string output = protocol.parseMessage(response);
 
 		// print the response:
-        std::cout << ">>> Recived from server " << len << " bytes:" << std::endl;
-        std::cout << response <<  std::endl;
-        if (response == "ERROR") {
+        std::cout << ">>> Recived from server " << output.length() << " bytes:" << std::endl;
+        std::cout << output <<  std::endl;
+        if (output == "ERROR") {
             std::cout << ">>> Exit" << std::endl;
         }
     }

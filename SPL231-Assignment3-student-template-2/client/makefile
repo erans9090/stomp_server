@@ -3,8 +3,8 @@ LDFLAGS:=-lboost_system -lpthread
 
 all: StompWCIClient
 
-StompWCIClient: bin/ConnectionHandler.o bin/StompClient.o bin/event.o bin/KeyboardReader.o bin/StompProtocol.o bin/SocketReader.o bin/User.o
-	g++ -o bin/StompWCIClient bin/ConnectionHandler.o  bin/StompClient.o bin/KeyboardReader.o bin/StompProtocol.o bin/SocketReader.o bin/User.o bin/event.o $(LDFLAGS)
+StompWCIClient: bin/ConnectionHandler.o bin/StompClient.o bin/event.o bin/KeyboardReader.o bin/StompProtocol.o bin/StompParser.o bin/SocketReader.o bin/User.o
+	g++ -o bin/StompWCIClient bin/ConnectionHandler.o  bin/StompClient.o bin/KeyboardReader.o bin/StompProtocol.o bin/StompParser.o bin/SocketReader.o bin/User.o bin/event.o $(LDFLAGS)
 
 bin/ConnectionHandler.o: src/ConnectionHandler.cpp
 	g++ $(CFLAGS) -o bin/ConnectionHandler.o src/ConnectionHandler.cpp
@@ -20,6 +20,9 @@ bin/StompClient.o: src/StompClient.cpp
 
 bin/StompProtocol.o: src/StompProtocol.cpp
 	g++ $(CFLAGS) -o bin/StompProtocol.o src/StompProtocol.cpp
+
+bin/StompProtocol.o: src/StompParser.cpp
+	g++ $(CFLAGS) -o bin/StompParser.o src/StompParser.cpp
 
 bin/KeyboardReader.o: src/KeyboardReader.cpp
 	g++ $(CFLAGS) -o bin/KeyboardReader.o src/KeyboardReader.cpp
