@@ -4,11 +4,7 @@
 using std::string;
 using std::vector;
 
-Game::Game() : Game("","")
-{
-}
-
-Game::~Game()
+Game::Game(): Game("","")
 {
 }
 
@@ -18,8 +14,6 @@ Game::Game(string teamA, string teamB) : teamA(teamA), teamAGoals(0), teamAPoses
 
 void Game::updateGame(std::unordered_map<std::string, std::string> updates)
 {
-    t
-
 }
 
 

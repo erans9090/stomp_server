@@ -27,7 +27,6 @@ private:
     
 public:
     Game();
-    ~Game();
     Game(string teamA, string teamB);
     void updateGame(std::unordered_map<std::string, std::string> updaes);
     string summarizeGame();

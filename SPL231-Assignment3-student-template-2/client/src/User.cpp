@@ -1,6 +1,7 @@
 #include "../include/User.h"
 #include "../include/StompParser.h"
 #include "../include/ConnectionHandler.h"
+#include "../include/Game.h"
 
 #include <string>
 #include <vector>
@@ -89,7 +90,7 @@ ConnectionHandler &User::getConnectionHandler()
 
 void User::subscribe(string gameName)
 {
-    std::vector<string,string> parsedNames = StompParser::parseCommand(gameName,'_')
+    vector<string> parsedNames = StompParser::parseCommand(gameName,'_');
     games[gameName] = Game(parsedNames.at(0),parsedNames.at(1));
 }
 
