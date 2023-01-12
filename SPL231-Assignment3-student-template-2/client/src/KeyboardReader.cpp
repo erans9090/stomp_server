@@ -1,5 +1,7 @@
 #include "../include/KeyboardReader.h"
 
+
+
 KeyboardReader::KeyboardReader(StompProtocol &protocol, User &_user): protocol(protocol),user(_user),shouldTerminate(false)
 {
 
@@ -7,6 +9,8 @@ KeyboardReader::KeyboardReader(StompProtocol &protocol, User &_user): protocol(p
 
 void KeyboardReader::Run()
 {
+    
+
     while(!shouldTerminate)
     {
         // get a command from keyboard:
@@ -15,6 +19,8 @@ void KeyboardReader::Run()
         const short bufsize = 1024;
         char buf[bufsize];
         std::cin.getline(buf, bufsize);
+        std::cout << "nevermind" << std::endl;
+
 		std::string line(buf);
 		int len=line.length();
 
@@ -27,6 +33,10 @@ void KeyboardReader::Run()
             std::cout << ">>> Disconnected" << std::endl;
             std::cout << ">>> EXIT" << std::endl;
             // shouldTerminate = true;
+        }
+        else
+        {
+	        
         }
 		// connectionHandler.sendLine(line) appends '\n' to the message. Therefor we send len+1 bytes.
         std::cout << ">>> Sent to server " << len+1 << " bytes:" << std::endl;

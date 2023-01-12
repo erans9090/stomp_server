@@ -19,16 +19,13 @@ int main(int argc, char *argv[]) {
 	StompProtocol protocol(user);
 
 	KeyboardReader keyboardReader(protocol, user);
-	SocketReader socketReader(protocol, user);
-
 	std::thread keyboardThread(&KeyboardReader::Run, &keyboardReader);
-	std::thread socketThread(&SocketReader::Run, &socketReader);
+	
 
 
 
 	// wait for the threads to finish:
 	keyboardThread.join();
-	socketThread.join();
 
 	return 0;
 }

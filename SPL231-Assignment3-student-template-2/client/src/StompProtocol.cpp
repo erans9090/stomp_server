@@ -1,4 +1,7 @@
 #include "../include/StompProtocol.h"
+#include "../include/SocketReader.h"
+
+#include <thread>
 #include <unordered_map>
 using namespace std;
 using std::string;
@@ -67,6 +70,8 @@ string StompProtocol::handleLogin(std::vector<std::string> parsedCommand)
     }
     
     user.setConnected(parsedCommand);
+    SocketReader socketReader(*this, user);
+    std::thread socketThread(&SocketReader::Run, &socketReader);
 
     return "CONNECT\naccept-version:1.2\nhost:stomp.cs.bgu.ac.il\nlogin:" + user.getUserName() + "\npasscode:" + user.getPassword() + "\n\n";
 }
