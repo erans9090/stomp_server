@@ -3,6 +3,7 @@
 #include "../include/ConnectionHandler.h"
 #include "../include/User.h"
 #include "../include/StompParser.h"
+#include "../include/event.h"
 
 #include <string>
 #include <vector>

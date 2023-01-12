@@ -83,7 +83,8 @@ string StompProtocol::handleLogin(std::vector<std::string> parsedCommand)
     // send error if user is already logged in
     if(user.isConnected())
     {
-        return "ERROR\nmessage:User is already logged in\n\n" + '\0';
+        std::cout << "User is already logged in" << std::endl;
+        return "";
     }
     
     user.setConnected(parsedCommand);

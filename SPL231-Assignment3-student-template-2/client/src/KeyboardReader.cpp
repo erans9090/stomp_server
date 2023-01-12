@@ -25,6 +25,11 @@ void KeyboardReader::Run()
 
         // protocol get line and the keyboarReader
         std::string message = protocol.buildFrameFromKeyboardCommand(line);
+        if(message == "")
+        {
+            std::cout << ">>> Invalid command" << std::endl;
+            continue;
+        }
         // TODO ----> delete these comments
         //execute sendLine only!! if the command is correct and frame was built
         //for example if there was an error on client side, createframe will return "" and sendLIne wont be executed
