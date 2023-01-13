@@ -1,5 +1,6 @@
 package bgu.spl.net.impl.stomp;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -119,6 +120,12 @@ public class User {
     }
 
     public void disconnect() {
+        try {
+            this.connectionHandler.close();
+        } 
+        catch (IOException exception) {
+            exception.printStackTrace();
+        }
         this.connectionHandler = null;
         this.connectionId = -1;
         this.isConnected = false;

@@ -124,7 +124,6 @@ void User::unsubscribeAll()
 
 void User::disconnect()
 {
-    connectionHandler.close();
     isConnectionHandlerConnected = false;
     isLogedIn = false;
     gameNames.clear();
@@ -132,6 +131,7 @@ void User::disconnect()
     receiptIdToMessage.clear();
     userName = "";
     password = "";
+    connectionHandler.close();
 }
 
 void User::addReceiptIdToMessage(int receiptId, string message)

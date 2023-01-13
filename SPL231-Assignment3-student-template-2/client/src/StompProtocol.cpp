@@ -31,6 +31,8 @@ std::string StompProtocol::handleStompMessageFromServer(string message)
     {
         int receiptId = std::stoi(parsedResponse["receipt-id"]);
         output = user.getReceiptOutput(receiptId);
+        if(output == "") // hapeens when the user has loggedout
+            user.disconnect();
     } 
     else if (command == "MESSAGE")
     {

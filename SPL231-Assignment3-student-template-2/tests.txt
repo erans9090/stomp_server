@@ -3,11 +3,14 @@ login 127.0.0.1:7777 amir films
 join germany_spain
 exit germany_spain
 join germany_spain
-
-
+report {file}
+summary {game_name} {user} {file}
+logout
 
 --- Client B ----
 login 127.0.0.1:7777 eran movies
 join germany_spain
-
-
+report {file}
+-client a logout
+report {file}
+logout
