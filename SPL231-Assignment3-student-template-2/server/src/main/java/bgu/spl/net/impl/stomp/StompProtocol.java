@@ -58,8 +58,7 @@ public class StompProtocol<T> implements StompMessagingProtocol<T>{
 
         // handle message according to the frame type
         String c = (String)parsedMessage.get("command");
-        
-        switch ((String)parsedMessage.get("command")) {
+                switch ((String)parsedMessage.get("command")) {
             case "CONNECT":
 
                 String userName = headers.get("login");

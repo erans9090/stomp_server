@@ -30,7 +30,15 @@ public class StompParser {
     public static Map<String, Object> parseMessage(String message) {
         // Clear the message till the first letter:
         int firstLetterIndex = 0;
+        for (int i = 0; i < message.length(); i++) {
+            if (message.charAt(i) > 'A' & message.charAt(i) < 'Z') {
+                firstLetterIndex = i;
+                break;
+            }
+        }
+        message = message.substring(firstLetterIndex);
 
+        // Parse the message:
         Map<String, Object> parsedMessage = new HashMap<>();
         Map<String, String> headers = parseHeaders(message);
         String body = parseBody(message);
