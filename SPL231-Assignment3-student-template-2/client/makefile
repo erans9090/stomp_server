@@ -39,13 +39,5 @@ bin/Game.o: src/Game.cpp
 .PHONY: clean
 clean:
 	rm -f bin/*
-	in/ReadFromSocket.o: src/ReadFromSocket.cpp
-	g++ $(CFLAGS) -o bin/ReadFromSocket.o src/ReadFromSocket.cpp
 
-bin/User.o: src/User.cpp
-	g++ $(CFLAGS) -o bin/User.o src/User.cpp
-
-.PHONY: clean
-clean:
-	rm -f bin/*
 	
