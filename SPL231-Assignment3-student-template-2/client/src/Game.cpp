@@ -11,7 +11,7 @@ Game::Game(): Game("","")
 {
 }
 
-Game::Game(string _teamA, string _teamB) : teamA(_teamA), teamAGoals("0"), teamAPosession("0"), teamB(_teamB), teamBGoals("0"), teamBPosession("0"), events()
+Game::Game(string teamA, string teamB) : teamA(teamA), teamAGoals(0), teamAPosession(0), teamB(teamB), teamBGoals(0), teamBPosession(0), events()
 {
 }
 
@@ -23,9 +23,9 @@ void Game::updateGame(string body,string user)
     std::map<string, string> teamBUpdates = event.get_team_b_updates();
     std::map<string, string> gameUpdates = event.get_game_updates();
 
-    teamAGoals = teamAUpdates["goals"];
+    teamAGoals = std::stoi(teamAUpdates["goals"]);
     teamAPosession = teamAUpdates["possession"];
-    teamBGoals = teamBUpdates["goals"];
+    teamBGoals = std::stoi(teamBUpdates["goals"]);
     teamBPosession = teamBUpdates["possession"];
 
     // update events
