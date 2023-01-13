@@ -1,0 +1,2 @@
+login 127.0.0.1:7777 amir films
+join germany_spain
