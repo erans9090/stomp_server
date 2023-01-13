@@ -96,7 +96,6 @@ string StompProtocol::handleLogin(std::vector<std::string> parsedCommand)
 
 string StompProtocol::handleLogout(std::vector<std::string> parsedCommand)
 {
-    user.disconnect();
     int receiptId = user.getReceiptId("");
     return "DISCONNECT\nreceipt:" + std::to_string(receiptId) + "\n\n" + '\0';
 } 
