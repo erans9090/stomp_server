@@ -11,8 +11,14 @@
 using std::pair;
 
 
-User::User() : receiptIdMaker(0), subIdMaker(0), userName(""), password(""), isConnectionHandlerConnected(false), isLogedIn(false), games(), receiptIdToMessage(), connectionHandler()
+User::User() : receiptIdMaker(0), subIdMaker(0), userName(""), password(""), isConnectionHandlerConnected(false), isLogedIn(false), gameNames(), games(), receiptIdToMessage(), connectionHandler()
 {
+}
+
+User::~User()
+{
+    gameNames.clear();
+    games.clear();
 }
 
 int User::getSubId()
@@ -96,13 +102,11 @@ void User::subscribe(string gameName)
     vector<string> parsedNames = StompParser::parseCommand(gameName,'_');
     gameNames.push_back(gameName);
     games.push_back(Game(parsedNames.at(0),parsedNames.at(1)));
-    // Game game(parsedNames.at(0),parsedNames.at(1));
-    // 
-    // std::cout << "fff" << std::endl;
-    // std::pair<string, Game> newGame (gameName, Game(parsedNames.at(0),parsedNames.at(1)));
-    // games.insert(newGame);
-    // gameMap.insert(std::pair<string, Game>("game1", Game("teamA", "teamB")));
-    //gameMap["game2"] = Game("teamC", "teamD");
+}
+
+int User::getSubIdOfGame(string gameName)
+{
+    return indexOf(gameName); // the subId is the index of the game in the vector
 }
 
 void User::unsubscribe(string gameName)
@@ -114,6 +118,7 @@ void User::unsubscribe(string gameName)
 
 void User::unsubscribeAll()
 {
+    gameNames.clear();
     games.clear();
 }
 
@@ -122,6 +127,7 @@ void User::disconnect()
     connectionHandler.close();
     isConnectionHandlerConnected = false;
     isLogedIn = false;
+    gameNames.clear();
     games.clear();
     receiptIdToMessage.clear();
     userName = "";

@@ -1,35 +1,13 @@
 --- Client A ----
 login 127.0.0.1:7777 amir films
 join germany_spain
+exit germany_spain
+join germany_spain
+
 
 
 --- Client B ----
 login 127.0.0.1:7777 eran movies
 join germany_spain
-
-
-
-The error message "munmap_chunk(): invalid pointer" that you are seeing in the file stl_construct.h is related to the way the C++ standard template library (STL) is managing memory. This file is a part of the C++ standard library implementation, and it contains the implementation of the _Destroy() function, which is used to destroy objects of a given type.
-
-The error message suggests that the pointer passed to the _Destroy() function is not a valid memory address. This could happen if the pointer is not pointing to a valid object, or if the object has already been destroyed. This can also occur if the pointer is a null pointer.
-
-It's likely that the error is caused by a bug in your code, specifically in the way you are handling the memory allocation and deallocation of the objects in the map.
-
-Here are some things you can check to try and diagnose the problem:
-
-Make sure that you are properly allocating memory for the objects in the map.
-
-Make sure that you are properly releasing the memory when you are done with the objects.
-
-Make sure that you are not trying to release memory multiple times.
-
-Make sure that you are properly initializing and destructing your objects.
-
-Make sure that you are not creating a cyclic reference.
-
-Make sure that you are not using uninitialized pointers.
-
-It might also help to run your program under a debugger, such as gdb, to see where the error is occurring and to inspect the state of the program at the time of the error, also it would be helpful if you could share more of your code, so I could have a better understanding of the error.
-
 
 

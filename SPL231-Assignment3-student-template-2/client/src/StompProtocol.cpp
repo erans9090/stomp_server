@@ -106,6 +106,16 @@ string StompProtocol::handleJoin(std::vector<std::string> parsedCommand)
     return "SUBSCRIBE\ndestination:/" + parsedCommand.at(1) + "\nid:" + std::to_string(user.getSubId()) + "\nreceipt:" + std::to_string(receiptId) + "\n\n" + '\0';
 }
 
+// exits from a game send unsubscribe frame
+string StompProtocol::handleExit(std::vector<std::string> parsedCommand)
+{
+    int receiptId = user.getReceiptId("Exited channel " + parsedCommand.at(1));
+    int subId = user.getSubIdOfGame(parsedCommand.at(1));
+
+    user.unsubscribe(parsedCommand.at(1));
+    return "UNSUBSCRIBE\nid:" + std::to_string(subId) + "\nreceipt:" + std::to_string(receiptId) + "\n\n" + '\0';
+} 
+
 string StompProtocol::handleReport(std::vector<std::string> parsedCommand)
 {
     names_and_events gameEvents = parseEventsFile(parsedCommand.at(1));
@@ -144,15 +154,7 @@ string StompProtocol::handleSummary(std::vector<std::string> parsedCommand)
     user.summreizeGame(gameName,userName,fileName);
 
     return "";
-} 
-
-// exits from a game send unsubscribe frame
-string StompProtocol::handleExit(std::vector<std::string> parsedCommand)
-{
-    user.unsubscribe(parsedCommand.at(1));
-    int receiptId = user.getReceiptId("Exited channel " + parsedCommand.at(1));
-    return "DISCONNECT\nreceipt:" + std::to_string(receiptId) + "\n\n" + '\0';
-} 
+}
 
 //TODO when error
 bool StompProtocol::getShouldTerminate()

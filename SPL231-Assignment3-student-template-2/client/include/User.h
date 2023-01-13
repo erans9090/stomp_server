@@ -34,6 +34,7 @@ class User
 
     public:
         User();
+        ~User();
         int getSubId();
         int getReceiptId(string receiptOutput);
         string getUserName();
@@ -46,6 +47,7 @@ class User
         void setLoggedIn(bool logedIn);
         ConnectionHandler &getConnectionHandler();
         void subscribe(string gameName);
+        int getSubIdOfGame(string gameName);
         void unsubscribe(string gameName);
         void unsubscribeAll();
         void disconnect();
