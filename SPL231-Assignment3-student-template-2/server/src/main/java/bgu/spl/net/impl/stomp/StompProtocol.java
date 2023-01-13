@@ -57,6 +57,8 @@ public class StompProtocol<T> implements StompMessagingProtocol<T>{
         HashMap<String,String> headers = (HashMap<String,String>)parsedMessage.get("headers");
 
         // handle message according to the frame type
+        String c = (String)parsedMessage.get("command");
+        
         switch ((String)parsedMessage.get("command")) {
             case "CONNECT":
 

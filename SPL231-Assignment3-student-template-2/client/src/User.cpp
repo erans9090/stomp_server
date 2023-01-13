@@ -6,6 +6,9 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
+#include <utility>
+
+using std::pair;
 
 
 User::User() : receiptIdMaker(0), subIdMaker(0), userName(""), password(""), isConnectionHandlerConnected(false), isLogedIn(false), games(), receiptIdToMessage(), connectionHandler()
@@ -91,12 +94,22 @@ ConnectionHandler &User::getConnectionHandler()
 void User::subscribe(string gameName)
 {
     vector<string> parsedNames = StompParser::parseCommand(gameName,'_');
-    games[gameName] = Game(parsedNames.at(0),parsedNames.at(1));
+    gameNames.push_back(gameName);
+    games.push_back(Game(parsedNames.at(0),parsedNames.at(1)));
+    // Game game(parsedNames.at(0),parsedNames.at(1));
+    // 
+    // std::cout << "fff" << std::endl;
+    // std::pair<string, Game> newGame (gameName, Game(parsedNames.at(0),parsedNames.at(1)));
+    // games.insert(newGame);
+    // gameMap.insert(std::pair<string, Game>("game1", Game("teamA", "teamB")));
+    //gameMap["game2"] = Game("teamC", "teamD");
 }
 
 void User::unsubscribe(string gameName)
 {
-    games.erase(gameName);
+    int index = indexOf(gameName);
+    games.erase(games.begin()+index);
+    gameNames.erase(gameNames.begin()+index);
 }
 
 void User::unsubscribeAll()
@@ -127,15 +140,9 @@ std::string User::getReceiptOutput(int receiptId)
 
 void User::updateGame(string gameName, string body,string user)
 {
-    if(games.find(gameName) == games.end())
-    {
-        // game not found
-    }
-    else
-    {
-        games[gameName].updateGame(body,user);
-    }
+    games.at(indexOf(gameName)).updateGame(body,user);
 }
+
 void User::send(string message)
 {   
     if(message == "")
@@ -154,5 +161,18 @@ void User::summreizeGame(string gameName,string userName,string fileName)
 {
     string completePath = ""; //TODO /../data/
     fileName = completePath + fileName;
-    games[gameName].summerizeGame(userName,fileName);
+    
+}
+
+
+int User::indexOf(string gameName)
+{
+    int index = -1;
+    for (int i = 0; i < games.size(); i++) {
+        if (gameNames[i] == gameName) {
+            index = i;
+            break;
+        }
+    }
+    return index;
 }

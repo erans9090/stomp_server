@@ -29,7 +29,7 @@ public class StompParser {
 
     public static Map<String, Object> parseMessage(String message) {
         // Clear the message till the first letter:
-        
+        int firstLetterIndex = 0;
 
         Map<String, Object> parsedMessage = new HashMap<>();
         Map<String, String> headers = parseHeaders(message);

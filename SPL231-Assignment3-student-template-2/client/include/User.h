@@ -5,10 +5,14 @@
 #include "../include/ConnectionHandler.h"
 #include "../include/Game.h"
 #include <unordered_map>
+#include <map>
+#include <hash_map>
+
 
 using std::string;
 using std::vector;
 using std::unordered_map;
+using std::map;
 
 
 class User
@@ -20,8 +24,10 @@ class User
         string password;
         bool isConnectionHandlerConnected;
         bool isLogedIn;
-        unordered_map<string, Game> games;
-        unordered_map<int, string> receiptIdToMessage;
+        vector<string> gameNames;
+        vector<Game> games;
+        // map<string,Game> games;
+        map<int, string> receiptIdToMessage;
         ConnectionHandler connectionHandler;
 
 
@@ -48,6 +54,8 @@ class User
         void updateGame(string gameName,string body,string user);
         void send(string message);
         void summreizeGame(string gameName,string userName,string fileName);
+        int indexOf(string gameName);
+
         
 
         // void addGame(std::vector<std::string> game);

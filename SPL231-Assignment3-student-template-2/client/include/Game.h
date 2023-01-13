@@ -32,6 +32,7 @@ private:
     
 public:
     Game();
+    ~Game();
     Game(string teamA, string teamB);
     void updateGame(string updaes,string user);
     void summerizeGame(string userName,string fileName);
