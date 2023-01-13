@@ -152,15 +152,15 @@ void User::updateGame(string gameName, string body,string user)
 void User::send(string message)
 {   
     if(message == "")
-        {
-            std::cout << ">>> Invalid command" << std::endl;
-            return;
-        }
-        if (!connectionHandler.sendLine(message)) {
-            std::cout << ">>> Disconnected" << std::endl;
-            std::cout << ">>> EXIT" << std::endl;
-            // shouldTerminate = true;
-        }
+    {
+        std::cout << ">>> Invalid command" << std::endl;
+        return;
+    }
+    if (!connectionHandler.sendLine(message)) {
+        std::cout << ">>> Disconnected" << std::endl;
+        std::cout << ">>> EXIT" << std::endl;
+        // shouldTerminate = true;
+    }
 }
 
 void User::summreizeGame(string gameName,string userName,string fileName)
