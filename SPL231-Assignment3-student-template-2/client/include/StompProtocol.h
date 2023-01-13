@@ -29,4 +29,5 @@ public:
     std::string handleReport(std::vector<std::string> parsedCommand);
     std::string handleSummary(std::vector<std::string> parsedCommand);
     std::string handleExit(std::vector<std::string> parsedCommand);
+    std::vector<std::string> splitStringByChar(std::string s, char del);
 };
