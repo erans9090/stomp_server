@@ -4,6 +4,7 @@ package bgu.spl.net.impl.stomp;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.nio.ByteBuffer;
+import java.nio.channels.ClosedChannelException;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.SocketChannel;
 import java.util.List;
@@ -48,7 +49,8 @@ public class StompConnectionHandler<T> extends NonBlockingConnectionHandler<T> {
         try {
             success = chan.read(buf) != -1;
         } catch (IOException ex) {
-            ex.printStackTrace();
+            if(!(ex instanceof ClosedChannelException))
+                ex.printStackTrace();
         }
         
         if (success) {
