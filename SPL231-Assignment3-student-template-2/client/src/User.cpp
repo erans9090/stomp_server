@@ -152,7 +152,7 @@ void User::send(string message)
 
 void User::summreizeGame(string gameName,string userName,string fileName)
 {
-    string completePath = ""; //TODO
+    string completePath = ""; //TODO /../data/
     fileName = completePath + fileName;
     games[gameName].summerizeGame(userName,fileName);
 }

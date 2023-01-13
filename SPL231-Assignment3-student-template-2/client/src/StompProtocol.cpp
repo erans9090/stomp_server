@@ -42,7 +42,6 @@ std::string StompProtocol::handleStompMessageFromServer(string message)
     return output;
 }
 
-
 string StompProtocol::buildFrameFromKeyboardCommand(std::string userCommand)
 {
     std::vector<std::string> parsedCommand = parser.parseCommand(userCommand,' ');
@@ -76,6 +75,7 @@ string StompProtocol::buildFrameFromKeyboardCommand(std::string userCommand)
 
     return output;
 }
+
 
 string StompProtocol::handleLogin(std::vector<std::string> parsedCommand)
 {
@@ -154,22 +154,7 @@ string StompProtocol::handleExit(std::vector<std::string> parsedCommand)
     return "DISCONNECT\nreceipt:" + std::to_string(receiptId) + "\n\n" + '\0';
 } 
 
-//  think this are not needed
-std::vector<string> StompProtocol::splitStringByChar(string s, char div)
-{
-    std::vector<string> vector;
-
-    stringstream ss(s);
-    string word;
-    while(!ss.eof()) 
-    {
-        std::getline(ss, word, div);
-        vector.push_back(word);
-    }
-
-    return vector;
-}
-
+//TODO when error
 bool StompProtocol::getShouldTerminate()
 {
     return shouldTerminate;

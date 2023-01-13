@@ -33,7 +33,7 @@ void Game::updateGame(string body,string user)
 
     eventToPush.push_back(std::to_string(event.get_time()));
     eventToPush.push_back(event.get_name());
-    eventToPush.push_back(event.get_discription());
+    eventToPush.push_back(event.get_discription()); // make sure that the field fit
     eventToPush.push_back(user);
     
 
@@ -54,17 +54,18 @@ void Game::summerizeGame(string userName,string fileName)
         }
     }
     // maybe to write directly to the file
+    //  make sure '/' before destenation doesnt get inside team a name
     output = teamA + " vs " + teamB +
-            "Game stats: \n" +
-            "General stats: \n" +
-            teamA + " stats: \n" +
-            "goals: " + teamAGoals + "\n" +
-            "possession: " + teamAPosession + "%\n" +
-            teamB + " stats: \n" +
-            "goals: " + teamBGoals + "\n" +
-            "possession: " + teamBPosession + "%\n" +
-            "Game event reports: \n" + 
-            eventsAsString + '\0';
+             "Game stats: \n" +
+             "General stats: \n" +
+             teamA + " stats: \n" +
+             "goals: " + teamAGoals + "\n" +
+             "possession: " + teamAPosession + "%\n" +
+             teamB + " stats: \n" +
+             "goals: " + teamBGoals + "\n" +
+             "possession: " + teamBPosession + "%\n" +
+             "Game event reports: \n" + 
+             eventsAsString + '\0';
 
     // \0 needed?
 
@@ -73,18 +74,3 @@ void Game::summerizeGame(string userName,string fileName)
     outfile << output; // writes the content to the file
     outfile.close(); // close the file
 }
-
-/*
-germany vs japan
-Game stats:
-General stats:
-active: false
-before halftime: false
-germany stats:
-goals: 1
-possession: 51%
-japan stats:
-goals: 2
-possession: 49%
-
-*/
