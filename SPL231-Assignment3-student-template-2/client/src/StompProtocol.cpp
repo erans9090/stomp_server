@@ -128,7 +128,7 @@ string StompProtocol::handleReport(std::vector<std::string> parsedCommand)
         map<string,string> genral_game_updates = e.get_game_updates();
         map<string,string> team_a_updates = e.get_team_a_updates();
         map<string,string> team_b_updates = e.get_team_b_updates();
-        string output = "SEND\ndestination:/" + parsedCommand.at(2) +
+        string output = "SEND\ndestination:/" + e.get_team_a_name() + "_" + e.get_team_b_name() + "\n" +
                         "user: " + user.getUserName() + "\n" +
                         "teamA: " + teamA + "\n" + 
                         "teamB: " + teamB + "\n" +
