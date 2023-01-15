@@ -53,7 +53,7 @@ class User
         void disconnect();
         void addReceiptIdToMessage(int receiptId, string message);
         string getReceiptOutput(int receiptId);
-        void updateGame(string gameName,string body,string user);
+        void updateGame(string gameName,string body);
         void send(string message);
         void summreizeGame(string gameName,string userName,string fileName);
         int indexOf(string gameName);

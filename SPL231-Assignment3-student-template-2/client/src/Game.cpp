@@ -20,13 +20,18 @@ Game::Game(string teamA, string teamB) : teamA(teamA), teamAGoals("0"), teamAPos
 {
 }
 
-void Game::updateGame(string body,string user)
+void Game::updateGame(string body)
 {
     Event event = StompParser::parseEvent(body);
     // update game stats
     std::map<string, string> teamAUpdates = event.get_team_a_updates();
     std::map<string, string> teamBUpdates = event.get_team_b_updates();
     std::map<string, string> gameUpdates = event.get_game_updates();
+
+    // parse user name from body
+    size_t pos = body.find("user:");
+    string userName = body.substr(pos + 5, body.find("\n", pos) - pos - 5);
+    std::cout << "user name: " << userName << std::endl;
 
     teamAGoals = teamAUpdates["goals"];
     teamAPosession = teamAUpdates["possession"];
@@ -39,7 +44,7 @@ void Game::updateGame(string body,string user)
     eventToPush.push_back(std::to_string(event.get_time()));
     eventToPush.push_back(event.get_name());
     eventToPush.push_back(event.get_discription()); // make sure that the field fit
-    eventToPush.push_back(user);
+    eventToPush.push_back(userName);
     
 
     events.push_back(eventToPush);

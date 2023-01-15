@@ -144,9 +144,9 @@ std::string User::getReceiptOutput(int receiptId)
     return receiptIdToMessage[receiptId];
 }
 
-void User::updateGame(string gameName, string body,string user)
+void User::updateGame(string gameName, string body)
 {
-    games.at(indexOf(gameName)).updateGame(body,user);
+    games.at(indexOf(gameName)).updateGame(body);
 }
 
 void User::send(string message)

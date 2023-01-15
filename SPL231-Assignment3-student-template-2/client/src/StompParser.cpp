@@ -101,6 +101,36 @@ Event StompParser::parseEvent(std::string body)
 
 }
 
+std::unordered_map<std::string, std::string> StompParser::parse_stomp_report(std::string& message) 
+{
+    std::unordered_map<std::string, std::string> result;
+    std::string title;
+    std::size_t pos = message.find('\n');
+    if (pos != std::string::npos) {
+        title = message.substr(0, pos);
+        std::string data = message.substr(pos + 1);
+        for (int i = 0; i < 3; i++) {
+            pos = data.find('\n');
+            std::string line = data.substr(0, pos);
+            data = data.substr(pos + 1);
+            pos = line.find(':');
+            if (pos != std::string::npos) {
+                std::string key = line.substr(0, pos);
+                std::string value = line.substr(pos + 1);
+                result[key] = value;
+            }
+
+        }
+        // add body
+        if (data.size() > 0) {
+            result["body"] = data;
+        }
+    }
+    result["destination"] = result["destination"].substr(1);
+    result["title"] = title;
+    return result;
+}
+
 
 
     

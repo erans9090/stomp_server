@@ -13,7 +13,11 @@ StompProtocol::StompProtocol(User &_user) : user(_user)
 std::string StompProtocol::handleStompMessageFromServer(string message)
 {
     // parse the message:
-    std::unordered_map<std::string, std::string> parsedResponse = parser.parse_stomp_message(message);
+    std::unordered_map<std::string, std::string> parsedResponse;
+    if(message.length() > 0 && message.at(0) == 'M')
+        parsedResponse = parser.parse_stomp_report(message);
+    else
+        parsedResponse = parser.parse_stomp_message(message);
     std::string command = parsedResponse["title"];
     std::string output = "";
 
@@ -36,8 +40,9 @@ std::string StompProtocol::handleStompMessageFromServer(string message)
     } 
     else if (command == "MESSAGE")
     {
+
         std::string gameName = parsedResponse["destination"];
-        user.updateGame(gameName, parsedResponse["body"],parsedResponse["user"]);
+        user.updateGame(gameName, parsedResponse["body"]);
     } 
 
     // return the output:
@@ -146,11 +151,8 @@ string StompProtocol::handleReport(std::vector<std::string> parsedCommand)
                         "team a updates: \n" + StompParser::getStringFromMap(e.get_team_a_updates()) +
                         "team b updates: \n" + StompParser::getStringFromMap(e.get_team_b_updates()) +
                         "description: " + e.get_discription() + '\0';
-
-        string dummy = "SEND\ndestination:/Germany_Japan\n\ndescription:\namir the king!\n\n" + '\0';
-        return output;
+        user.send(output);
     }
-
     return "";
 } 
 

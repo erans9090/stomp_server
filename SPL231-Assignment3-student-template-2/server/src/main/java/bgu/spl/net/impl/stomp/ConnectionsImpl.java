@@ -61,8 +61,8 @@ public class ConnectionsImpl<T> implements Connections<T> {
             // }
 
             String response = "MESSAGE\nsubscription:" + fromSubId + "\nmessage-id:" + messageIdMaker++ + "\ndestination:" + game + "\n\n" + (String)msg + "\n" + '\u0000';
-            user.send("MESSAGE\nsubscription:" + fromSubId + "\nmessage-id:" + messageIdMaker++ + "\ndestination:" + game + "\n\n" + "dummy" + '\u0000');
-            // user.send(response);
+            // user.send("MESSAGE\nsubscription:" + fromSubId + "\nmessage-id:" + messageIdMaker++ + "\ndestination:" + game + "\n\n" + "dummy" + '\u0000');
+            user.send(response);
             
         }
     }
