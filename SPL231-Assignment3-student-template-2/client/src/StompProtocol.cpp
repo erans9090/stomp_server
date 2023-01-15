@@ -145,7 +145,7 @@ string StompProtocol::handleReport(std::vector<std::string> parsedCommand)
                         "user: " + user.getUserName() + "\n" +
                         "team a: " + e.get_team_a_name() + "\n" +
                         "team b: " + e.get_team_b_name() + "\n" +
-                        "event name :" + e.get_name() + "\n" +
+                        "event name:" + e.get_name() + "\n" +
                         "time: " + std::to_string(e.get_time()) + "\n" +
                         "general game updates: \n" + StompParser::getStringFromMap(e.get_game_updates()) +
                         "team a updates: \n" + StompParser::getStringFromMap(e.get_team_a_updates()) +

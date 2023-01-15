@@ -61,45 +61,42 @@ std::string StompParser::getStringFromMap(std::map<std::string, std::string> map
 // 
 Event StompParser::parseEvent(std::string body)
 {
-    nlohmann::json event = nlohmann::json::parse(body);
-
-    //use the code from even.cpp parse events for one event
-    std::string team_a_name = event["team a"];
-    std::string team_b_name = event["team b"];
-
-    std::string name = event["event name"];
-    int time = event["time"];
-    std::string description = event["description"];
-    std::map<std::string, std::string> game_updates;
-    std::map<std::string, std::string> team_a_updates;
-    std::map<std::string, std::string> team_b_updates;
-    for (auto &update : event["general game updates"].items())
-    {
-        if (update.value().is_string())
-            game_updates[update.key()] = update.value();
-        else
-            game_updates[update.key()] = update.value().dump();
-    }
-
-    for (auto &update : event["team a updates"].items())
-    {
-        if (update.value().is_string())
-            team_a_updates[update.key()] = update.value();
-        else
-            team_a_updates[update.key()] = update.value().dump();
-    }
-
-    for (auto &update : event["team b updates"].items())
-    {
-        if (update.value().is_string())
-            team_b_updates[update.key()] = update.value();
-        else
-            team_b_updates[update.key()] = update.value().dump();
-    }
     
-    return Event(team_a_name, team_b_name, name, time, game_updates, team_a_updates, team_b_updates, description);
+    // std::string team_a_name = body.substr(body.find("team a name"), body.find("team b name"));
+    // std::string team_b_name = body.substr(body.find("team b name"), body.find("name"));
+    // std::string name = body.substr(body.find("name"), body.find("time"));
+    // std::string time = body.substr(body.find("time"), body.find("game updates"));
+    // // parse game updates
+
+    // map<string, string> game_updates;
+    // std::string game_updates_str = body.substr(body.find("game updates"), body.find("team a updates"));
+    
+    // std::size_t pos = game_updates_str.find('\n');
+    // if (pos != std::string::npos) {
+    //     std::string data = game_updates_str.substr(pos + 1);
+    //     while (data.size() > 0) {
+    //         pos = data.find('\n');
+    //         std::string line = data.substr(0, pos);
+    //         data = data.substr(pos + 1);
+    //         pos = line.find(':');
+    //         if (pos != std::string::npos) {
+    //             std::string key = line.substr(0, pos);
+    //             std::string value = line.substr(pos + 1);
+    //             result[key] = value;
+    //         }
+
+    //     }
+    // }
+
+    // std::string game_updates = body.substr(body.find("game updates"), body.find("team a updates"));
+    // std::string team_a_updates = body.substr(body.find("team a updates"), body.find("team b updates"));
+    // std::string team_b_updates = body.substr(body.find("team b updates"), body.find("description"));
+    // std::string description = body.substr(body.find("description"));
+ 
+    // return Event(name, team_a_name, team_b_name, time, game_updates, team_a_updates, team_b_updates, description);
 
 }
+
 
 std::unordered_map<std::string, std::string> StompParser::parse_stomp_report(std::string& message) 
 {
