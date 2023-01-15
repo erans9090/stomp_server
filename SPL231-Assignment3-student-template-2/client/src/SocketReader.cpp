@@ -27,6 +27,8 @@ void SocketReader::Run()
         std::string output = protocol.handleStompMessageFromServer(response);
 
 		// print the response:
+        if(output == "")
+            continue;
         std::cout << ">>> Recived from server " << output.length() << " bytes:" << std::endl;
         std::cout << output <<  std::endl;
         if (output == "ERROR") {

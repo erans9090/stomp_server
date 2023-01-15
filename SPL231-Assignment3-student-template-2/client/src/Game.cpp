@@ -83,7 +83,6 @@ void Game::updateGame(string body)
     eventToPush.push_back(description);
     eventToPush.push_back(user);
 
-
     events.push_back(eventToPush);
     
 }
