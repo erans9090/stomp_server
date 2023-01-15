@@ -1,8 +1,8 @@
 
 #include "../include/Game.h"
 #include <fstream>
-
-
+#include <iostream>
+#include <ios>
 
 using std::string;
 using std::vector;
@@ -57,11 +57,22 @@ Game::Game(string teamA, string teamB) : teamA(teamA), teamAGoals("0"), teamAPos
 // }
 
 void Game::updateGame(string body)
-{
-    string settings = body.substr(0, body.find("general"));
-    string team_a_updates = body.substr(body.find("team a updates:")+15, body.find("team b updates:"));
-    string team_b_updates = body.substr(body.find("team b updates:")+15, body.find("description"));
-    string description = body.substr(body.find("description:")+13);
+{    
+    int posStart = 0;
+    int posEnd = body.find("general");
+    string settings = body.substr(posStart, posEnd - posStart);
+    
+    posStart = body.find("team a updates:")+15;
+    posEnd = body.find("team b updates:");
+    string team_a_updates = body.substr(posStart, posEnd - posStart);
+
+    posStart = body.find("team b updates:")+15;
+    posEnd = body.find("description:");
+    string team_b_updates = body.substr(posStart, posEnd - posStart);
+
+    posStart = body.find("description:")+13;
+    string description = body.substr(posStart);
+
 
     if (team_a_updates.find("goals:") != std::string::npos)
         teamAGoals = team_a_updates.substr(team_a_updates.find("goals:") + 6, team_a_updates.find('\n', team_a_updates.find("goals:")) - team_a_updates.find("goals:") - 6);
@@ -112,10 +123,8 @@ void Game::summerizeGame(string userName,string fileName)
              "Game event reports: \n" + 
              eventsAsString;
 
-    // \0 needed?
-
-    std::fstream outfile;
-    outfile.open(fileName); // opens the file for writing create it if doesnt exists
+    std::ofstream outfile(fileName);
+    // outfile.open(fileName, std::fstream::in); // opens the file for writing create it if doesnt exists
     outfile << output; // writes the content to the file
     outfile.close(); // close the file
 }

@@ -56,9 +56,9 @@ string StompProtocol::buildFrameFromKeyboardCommand(std::string userCommand)
     else if(userCommand == "2")
         userCommand = "join Germany_Japan";
     else if(userCommand == "3")
-        userCommand = "report events1_partial.json";
+        userCommand = "report events1.json";
     else if(userCommand == "4")
-        userCommand = "summary Germany_Japan admin summary1.txt";
+        userCommand = "summary Germany_Japan admin summary02.txt";
     else if(userCommand == "5")
         userCommand = "exit Germany_Japan";
 
