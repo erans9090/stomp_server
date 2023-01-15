@@ -57,6 +57,11 @@ bool ConnectionHandler::sendBytes(const char bytes[], int bytesToWrite) {
 	boost::system::error_code error;
 	try {
 		while (!error && bytesToWrite > tmp) {
+			if(bytes == nullptr)
+			{
+				std::cerr<<"Buffer is empty"<<std::endl;
+				return false;
+			}
 			tmp += socket_.write_some(boost::asio::buffer(bytes + tmp, bytesToWrite - tmp), error);
 		}
 		if (error)
@@ -97,9 +102,9 @@ bool ConnectionHandler::getFrameAscii(std::string &frame, char delimiter) {
 }
 
 bool ConnectionHandler::sendFrameAscii(const std::string &frame, char delimiter) {
-	bool result = sendBytes(frame.c_str(), frame.length());
-	if (!result) return false;
-	return sendBytes(&delimiter, 1);
+	return sendBytes(frame.c_str(), frame.length());
+	// if (!result) return false;
+	// return sendBytes(&delimiter, 1);
 }
 
 // Close down the connection properly.

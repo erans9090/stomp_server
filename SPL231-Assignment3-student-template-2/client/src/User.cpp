@@ -156,7 +156,7 @@ void User::send(string message)
         std::cout << ">>> Invalid command" << std::endl;
         return;
     }
-    if (!connectionHandler.sendLine(message)) {
+    if (!getConnectionHandler().sendLine(message)) {
         std::cout << ">>> Disconnected" << std::endl;
         std::cout << ">>> EXIT" << std::endl;
         // shouldTerminate = true;

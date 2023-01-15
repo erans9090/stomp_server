@@ -46,6 +46,17 @@ std::string StompProtocol::handleStompMessageFromServer(string message)
 
 string StompProtocol::buildFrameFromKeyboardCommand(std::string userCommand)
 {
+    if(userCommand == "1")
+        userCommand = "login 127.0.0.1:7777 admin admin";
+    else if(userCommand == "2")
+        userCommand = "join Germany_Japan";
+    else if(userCommand == "3")
+        userCommand = "report events1_partial.json";
+    else if(userCommand == "4")
+        userCommand = "summary Germany_Japan admin events1_partial.json";
+    else if(userCommand == "5")
+        userCommand = "exit Germany_Japan";
+
     std::vector<std::string> parsedCommand = parser.parseCommand(userCommand,' ');
     std::string command = parsedCommand.at(0);
     std::string output = "";
@@ -127,13 +138,17 @@ string StompProtocol::handleReport(std::vector<std::string> parsedCommand)
     {
         string output = "SEND\ndestination:/" + e.get_team_a_name() + "_" + e.get_team_b_name() + "\n\n" +
                         "user: " + user.getUserName() + "\n" +
+                        "team a: " + e.get_team_a_name() + "\n" +
+                        "team b: " + e.get_team_b_name() + "\n" +
                         "event name :" + e.get_name() + "\n" +
                         "time: " + std::to_string(e.get_time()) + "\n" +
                         "general game updates: \n" + StompParser::getStringFromMap(e.get_game_updates()) +
                         "team a updates: \n" + StompParser::getStringFromMap(e.get_team_a_updates()) +
                         "team b updates: \n" + StompParser::getStringFromMap(e.get_team_b_updates()) +
                         "description: " + e.get_discription() + '\0';
-        user.send(output);
+
+        string dummy = "SEND\ndestination:/Germany_Japan\n\ndescription:\namir the king!\n\n" + '\0';
+        return output;
     }
 
     return "";

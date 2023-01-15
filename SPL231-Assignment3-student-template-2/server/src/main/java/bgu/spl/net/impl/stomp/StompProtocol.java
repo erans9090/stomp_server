@@ -126,7 +126,7 @@ public class StompProtocol<T> implements StompMessagingProtocol<T>{
                 // send error message
                 break;
         }
-
+        System.out.println("response := " + response);
         if(!response.equals("")) {
             connections.send(connectionId, response);
         }
