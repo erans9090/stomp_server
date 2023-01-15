@@ -58,7 +58,7 @@ std::string StompParser::getStringFromMap(std::map<std::string, std::string> map
     }
     return result;
 }
-
+// 
 Event StompParser::parseEvent(std::string body)
 {
     nlohmann::json event = nlohmann::json::parse(body);
