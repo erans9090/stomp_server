@@ -165,9 +165,10 @@ void User::send(string message)
 
 void User::summreizeGame(string gameName,string userName,string fileName)
 {
-    string completePath = ""; //TODO /../data/
-    fileName = completePath + fileName;
-    
+    // string completePath = "../data/";
+    // fileName = completePath + fileName;
+    games.at(indexOf(gameName)).summerizeGame(userName,fileName);
+
 }
 
 

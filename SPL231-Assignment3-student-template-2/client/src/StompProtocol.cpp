@@ -58,7 +58,7 @@ string StompProtocol::buildFrameFromKeyboardCommand(std::string userCommand)
     else if(userCommand == "3")
         userCommand = "report events1_partial.json";
     else if(userCommand == "4")
-        userCommand = "summary Germany_Japan admin events1_partial.json";
+        userCommand = "summary Germany_Japan admin summary1.txt";
     else if(userCommand == "5")
         userCommand = "exit Germany_Japan";
 

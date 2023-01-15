@@ -59,18 +59,18 @@ Game::Game(string teamA, string teamB) : teamA(teamA), teamAGoals("0"), teamAPos
 void Game::updateGame(string body)
 {
     string settings = body.substr(0, body.find("general"));
-    string team_a_updates = body.substr(body.find("team a updates:")+15, body.find("team b"));
-    string team_b_updates = body.substr(body.find("team a updates:")+15, body.find("description"));
-    string description = body.substr(body.find("description:")+12);
+    string team_a_updates = body.substr(body.find("team a updates:")+15, body.find("team b updates:"));
+    string team_b_updates = body.substr(body.find("team b updates:")+15, body.find("description"));
+    string description = body.substr(body.find("description:")+13);
 
     if (team_a_updates.find("goals:") != std::string::npos)
-        teamAGoals = team_a_updates.substr(team_a_updates.find("goals:"), team_a_updates.find((team_a_updates.find("goals:"), '\n')));
+        teamAGoals = team_a_updates.substr(team_a_updates.find("goals:") + 6, team_a_updates.find('\n', team_a_updates.find("goals:")) - team_a_updates.find("goals:") - 6);
     if (team_a_updates.find("possession:") != std::string::npos)
-        teamAPosession = team_a_updates.substr(team_a_updates.find("possession:"), team_a_updates.find((team_a_updates.find("possession:"), '\n')));
+        teamAPosession = team_a_updates.substr(team_a_updates.find("possession:") + 11, team_a_updates.find('\n', team_a_updates.find("possession:")) - team_a_updates.find("possession:") - 11);
     if (team_b_updates.find("goals:") != std::string::npos)
-        teamBGoals = team_b_updates.substr(team_b_updates.find("goals:"), team_b_updates.find((team_b_updates.find("goals:"), '\n')));
+        teamBGoals = team_b_updates.substr(team_b_updates.find("goals:") + 6, team_b_updates.find('\n', team_b_updates.find("goals:")) - team_b_updates.find("goals:") - 6);
     if (team_b_updates.find("possession:") != std::string::npos)
-        teamBPosession = team_b_updates.substr(team_b_updates.find("possession:"), team_b_updates.find((team_b_updates.find("possession:"), '\n')));
+        teamBPosession = team_b_updates.substr(team_b_updates.find("possession:") + 11, team_b_updates.find('\n', team_b_updates.find("possession:")) - team_b_updates.find("possession:") - 11);
 
     // update events
     vector<string> eventToPush;
@@ -100,21 +100,21 @@ void Game::summerizeGame(string userName,string fileName)
     }
     // maybe to write directly to the file
     //  make sure '/' before destenation doesnt get inside team a name
-    output = teamA + " vs " + teamB +
+    output = teamA + " vs " + teamB + '\n' + 
              "Game stats: \n" +
              "General stats: \n" +
              teamA + " stats: \n" +
              "goals: " + teamAGoals + "\n" +
-             "possession: " + teamAPosession + "%\n" +
+             "possession: " + teamAPosession + "\n" +
              teamB + " stats: \n" +
              "goals: " + teamBGoals + "\n" +
-             "possession: " + teamBPosession + "%\n" +
+             "possession: " + teamBPosession + "\n" +
              "Game event reports: \n" + 
-             eventsAsString + '\0';
+             eventsAsString;
 
     // \0 needed?
 
-    std::ofstream outfile;
+    std::fstream outfile;
     outfile.open(fileName); // opens the file for writing create it if doesnt exists
     outfile << output; // writes the content to the file
     outfile.close(); // close the file
