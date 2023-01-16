@@ -18,7 +18,6 @@ class User
 {
     private:
         int receiptIdMaker;
-        int subIdMaker;
         string userName;
         string password;
         bool isConnectionHandlerConnected;
@@ -35,7 +34,6 @@ class User
     public:
         User();
         ~User();
-        int getSubId();
         int getReceiptId(string receiptOutput);
         string getUserName();
         void setUserName(std::string name);

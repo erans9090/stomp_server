@@ -30,7 +30,7 @@ std::string StompProtocol::handleStompMessageFromServer(string message)
     else if (command == "ERROR")
     {
         output = parsedResponse["message"];
-        // handelLogOut();
+        handleLogout();
     }
     else if (command == "RECEIPT")
     {
@@ -59,7 +59,7 @@ string StompProtocol::buildFrameFromKeyboardCommand(std::string userCommand)
     else if(userCommand == "3")
         userCommand = "report events1.json";
     else if(userCommand == "4")
-        userCommand = "summary Germany_Japan admin summary03.txt";
+        userCommand = "summary Germany_Japan admin summary04.txt";
     else if(userCommand == "5")
         userCommand = "exit Germany_Japan";
     else if(userCommand == "6")
@@ -87,7 +87,7 @@ string StompProtocol::buildFrameFromKeyboardCommand(std::string userCommand)
     } 
     else if (command == "logout")
     {
-        output = handleLogout(parsedCommand);
+        output = handleLogout();
     } 
     else if (command == "join")
     {
@@ -125,7 +125,7 @@ string StompProtocol::handleLogin(std::vector<std::string> parsedCommand)
     return "CONNECT\naccept-version:1.2\nhost:stomp.cs.bgu.ac.il\nlogin:" + user.getUserName() + "\npasscode:" + user.getPassword() + "\n\n" + '\0';
 }
 
-string StompProtocol::handleLogout(std::vector<std::string> parsedCommand)
+string StompProtocol::handleLogout()
 {
     
     user.setTerminate(true);
@@ -137,7 +137,7 @@ string StompProtocol::handleJoin(std::vector<std::string> parsedCommand)
 {
     user.subscribe(parsedCommand.at(1));
     int receiptId = user.getReceiptId("Joined channel " + parsedCommand.at(1));
-    return "SUBSCRIBE\ndestination:/" + parsedCommand.at(1) + "\nid:" + std::to_string(user.getSubId()) + "\nreceipt:" + std::to_string(receiptId) + "\n\n" + '\0';
+    return "SUBSCRIBE\ndestination:/" + parsedCommand.at(1) + "\nid:" + std::to_string(user.getSubIdOfGame(parsedCommand.at(1))) + "\nreceipt:" + std::to_string(receiptId) + "\n\n" + '\0';
 }
 
 // exits from a game send unsubscribe frame
@@ -146,6 +146,11 @@ string StompProtocol::handleExit(std::vector<std::string> parsedCommand)
     int receiptId = user.getReceiptId("Exited channel " + parsedCommand.at(1));
     int subId = user.getSubIdOfGame(parsedCommand.at(1));
 
+    if(subId == -1)
+    {
+        std::cout << "User is not subscribed to this game" << std::endl;
+        return "";
+    }
     user.unsubscribe(parsedCommand.at(1));
     return "UNSUBSCRIBE\nid:" + std::to_string(subId) + "\nreceipt:" + std::to_string(receiptId) + "\n\n" + '\0';
 } 
@@ -156,6 +161,13 @@ string StompProtocol::handleReport(std::vector<std::string> parsedCommand)
 
     string teamA = gameEvents.team_a_name;
     string teamB = gameEvents.team_b_name;
+
+    if(user.getSubIdOfGame(teamA + "_" + teamB) == -1)
+    {
+        std::cout << "User is not subscribed to this game" << std::endl;
+        return "";
+    }
+
     for (Event& e : gameEvents.events)
     {
         string output = "SEND\ndestination:/" + e.get_team_a_name() + "_" + e.get_team_b_name() + "\n\n" +

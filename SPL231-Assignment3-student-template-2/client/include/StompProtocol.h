@@ -22,7 +22,7 @@ public:
     bool getShouldTerminate();
     void setShouldTerminate(bool value);
     std::string handleLogin(std::vector<std::string> parsedCommand);
-    std::string handleLogout(std::vector<std::string> parsedCommand);
+    std::string handleLogout();
     std::string handleJoin(std::vector<std::string> parsedCommand);
     std::string handleReport(std::vector<std::string> parsedCommand);
     std::string handleSummary(std::vector<std::string> parsedCommand);

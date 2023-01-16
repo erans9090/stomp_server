@@ -11,7 +11,7 @@
 using std::pair;
 
 
-User::User() : receiptIdMaker(0), subIdMaker(0), userName(""), password(""), isConnectionHandlerConnected(false), isLogedIn(false), terminate(false), gameNames(), games(), receiptIdToMessage(), connectionHandler()
+User::User() : receiptIdMaker(0), userName(""), password(""), isConnectionHandlerConnected(false), isLogedIn(false), terminate(false), gameNames(), games(), receiptIdToMessage(), connectionHandler()
 {
 }
 
@@ -19,11 +19,6 @@ User::~User()
 {
     gameNames.clear();
     games.clear();
-}
-
-int User::getSubId()
-{
-    return subIdMaker++;
 }
 
 int User::getReceiptId(string receiptOutput)
