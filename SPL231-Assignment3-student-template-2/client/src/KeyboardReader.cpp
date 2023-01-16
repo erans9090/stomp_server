@@ -21,7 +21,6 @@ void KeyboardReader::Run()
         std::cin.getline(buf, bufsize);
 
 		std::string line(buf);
-		int len=line.length();
 
         // protocol get line and the keyboarReader
         std::string message = protocol.buildFrameFromKeyboardCommand(line);
