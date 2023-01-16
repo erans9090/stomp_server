@@ -14,7 +14,7 @@ void KeyboardReader::Run()
     while(!user.shouldTerminate())
     {
         // get a command from keyboard:
-        std::cout << ">>> Enter a command:" << std::endl;
+        // std::cout << ">>> Enter a command:" << std::endl;
 
         const short bufsize = 1024;
         char buf[bufsize];
@@ -42,9 +42,9 @@ void KeyboardReader::Run()
 	        
         }
 		// connectionHandler.sendLine(line) appends '\n' to the message. Therefor we send len+1 bytes.
-        std::cout << ">>> Sent to server " << len+1 << " bytes:" << std::endl;
-        std::cout << message <<  std::endl;
+        // std::cout << ">>> Sent to server " << len+1 << " bytes:" << std::endl;
+        // std::cout << message <<  std::endl;
     }
-    std::cout << ">>> KeyboardReader terminated" << std::endl;
+    // std::cout << ">>> KeyboardReader terminated" << std::endl;
   
 }

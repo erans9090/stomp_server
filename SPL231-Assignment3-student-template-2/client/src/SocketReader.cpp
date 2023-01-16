@@ -29,7 +29,7 @@ void SocketReader::Run()
 		// print the response:
         if(output == "")
             continue;
-        std::cout << ">>> Recived from server " << output.length() << " bytes:" << std::endl;
+        // std::cout << ">>> Recived from server " << output.length() << " bytes:" << std::endl;
         std::cout << output <<  std::endl;
         if (output == "ERROR") {
             std::cout << ">>> Exit" << std::endl;
@@ -37,5 +37,5 @@ void SocketReader::Run()
     }
 
     
-    std::cout << ">>> SocketReader terminated" << std::endl;
+    // std::cout << ">>> SocketReader terminated" << std::endl;
 }
