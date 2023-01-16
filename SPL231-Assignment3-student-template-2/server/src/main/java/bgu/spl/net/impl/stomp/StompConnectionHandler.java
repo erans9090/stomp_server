@@ -94,8 +94,12 @@ public class StompConnectionHandler<T> extends NonBlockingConnectionHandler<T> {
         }
 
         if (writeQueue.isEmpty()) {
-            if (stompProtocol.shouldTerminate()) close();
-            else reactor.updateInterestedOps(chan, SelectionKey.OP_READ);
+            try {
+                if (stompProtocol.shouldTerminate()) close();
+                else reactor.updateInterestedOps(chan, SelectionKey.OP_READ);
+            } catch(CancelledKeyExeption e) {
+                e.printStackTrace();
+            }
         }
     }
     

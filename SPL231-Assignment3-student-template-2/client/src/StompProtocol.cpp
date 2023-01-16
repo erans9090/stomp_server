@@ -59,19 +59,27 @@ string StompProtocol::buildFrameFromKeyboardCommand(std::string userCommand)
     else if(userCommand == "3")
         userCommand = "report events1.json";
     else if(userCommand == "4")
-        userCommand = "summary Germany_Japan admin summary02.txt";
+        userCommand = "summary Germany_Japan admin summary03.txt";
     else if(userCommand == "5")
         userCommand = "exit Germany_Japan";
     else if(userCommand == "6")
         userCommand = "logout";
-    else
-        user.setTerminate(true);
+    else if(userCommand == "7")
+        userCommand = "login 127.0.0.1:7777 eran admin";
 
 
 
     std::vector<std::string> parsedCommand = StompParser::parseCommand(userCommand,' ');
     std::string command = parsedCommand.at(0);
     std::string output = "";
+
+    if(command != "login"){
+        if(!user.isConnected())
+        {
+            std::cout << "User is not logged in" << std::endl;
+            return "";
+        }
+    }
 
     if(command == "login") 
     {
@@ -119,6 +127,7 @@ string StompProtocol::handleLogin(std::vector<std::string> parsedCommand)
 
 string StompProtocol::handleLogout(std::vector<std::string> parsedCommand)
 {
+    
     user.setTerminate(true);
     int receiptId = user.getReceiptId("");
     return "DISCONNECT\nreceipt:" + std::to_string(receiptId) + "\n\n" + '\0';
