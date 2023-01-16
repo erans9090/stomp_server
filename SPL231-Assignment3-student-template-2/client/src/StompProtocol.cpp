@@ -30,7 +30,7 @@ std::string StompProtocol::handleStompMessageFromServer(string message)
     else if (command == "ERROR")
     {
         output = parsedResponse["message"];
-        handleLogout();
+        user.send(handleLogout());
     }
     else if (command == "RECEIPT")
     {

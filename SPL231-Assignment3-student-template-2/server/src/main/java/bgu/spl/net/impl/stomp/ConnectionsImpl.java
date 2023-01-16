@@ -46,7 +46,7 @@ public class ConnectionsImpl<T> implements Connections<T> {
 
         // if subscription is not subscribed to the channel send Error message
         if (!joinedToGame) {
-            String error = "ERROR\nmessage: You are not subscribed to this channel\n\n" + '\u0000';
+            String error = "ERROR\nmessage:You are not subscribed to this channel\n\n" + '\u0000';
             send(connectionId, (T)error);
             return;
         }
@@ -103,7 +103,7 @@ public class ConnectionsImpl<T> implements Connections<T> {
         // remove user from game's users list
         String game = user.getGame(subId);
         if(game == null) {
-            return "ERROR\nmessage: You are not subscribed to this channel\n\n" + '\u0000';
+            return "ERROR\nmessage:You are not subscribed to this channel\n\n" + '\u0000';
         }
         gameToUsers.get(game).remove(user);
 
@@ -138,7 +138,7 @@ public class ConnectionsImpl<T> implements Connections<T> {
             return subscribed;
         }
         else { // user is already subscribed to game
-            return "ERROR\nmessage: You are already subscribed to this channel\n\n" + '\u0000';
+            return "ERROR\nmessage:You are already subscribed to this channel\n\n" + '\u0000';
         }
 
     }
@@ -161,10 +161,10 @@ public class ConnectionsImpl<T> implements Connections<T> {
 
                 // password is wrong
                 if(!nameToUser.get(userName).getPassword().equals(password)) {
-                    return "ERROR\nmessage: Wrong password\n\n" + '\u0000';
+                    return "ERROR\nmessage:Wrong password\n\n" + '\u0000';
                 }
                 else if (nameToUser.get(userName).isConnected()) { // user is already connected
-                    return "ERROR\nmessage: User is already connected\n\n" + '\u0000';
+                    return "ERROR\nmessage:User is already connected\n\n" + '\u0000';
                 }
                 else { // user is not connected
                     User user = new User(userName, password, connectionIdToUser.get(id).getConnectionHandler(),id);
