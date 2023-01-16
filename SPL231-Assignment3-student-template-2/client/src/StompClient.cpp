@@ -14,7 +14,6 @@ int main(int argc, char *argv[]) {
 	// login 127.0.0.1:7777 eran qqqqqqq
 
 	std::cout << "Starting client" << std::endl;
-	// valgrind --leak-check=yes bin/main
 	while(true) {
 	// set objects:
 		User user;

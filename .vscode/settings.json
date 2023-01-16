@@ -88,6 +88,9 @@
         "xtree": "cpp",
         "xutility": "cpp",
         "*.ipp": "cpp",
-        "hash_map": "cpp"
+        "hash_map": "cpp",
+        "memory_resource": "cpp",
+        "set": "cpp",
+        "cinttypes": "cpp"
     }
 }
