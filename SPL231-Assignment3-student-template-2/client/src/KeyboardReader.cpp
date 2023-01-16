@@ -2,7 +2,7 @@
 
 
 
-KeyboardReader::KeyboardReader(StompProtocol &protocol, User &_user): protocol(protocol),user(_user),shouldTerminate(false)
+KeyboardReader::KeyboardReader(StompProtocol &protocol, User &_user): protocol(protocol),user(_user)
 {
 
 }
@@ -11,7 +11,7 @@ void KeyboardReader::Run()
 {
     
 
-    while(!shouldTerminate)
+    while(!user.shouldTerminate())
     {
         // get a command from keyboard:
         std::cout << ">>> Enter a command:" << std::endl;
@@ -45,5 +45,6 @@ void KeyboardReader::Run()
         std::cout << ">>> Sent to server " << len+1 << " bytes:" << std::endl;
         std::cout << message <<  std::endl;
     }
+    std::cout << ">>> KeyboardReader terminated" << std::endl;
   
 }

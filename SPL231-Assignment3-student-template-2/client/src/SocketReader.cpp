@@ -4,12 +4,12 @@
 #include <chrono>
 
 
-SocketReader::SocketReader(StompProtocol &protocol,User &user) : protocol(protocol), user(user), shouldTerminate(false) 
+SocketReader::SocketReader(StompProtocol &protocol,User &user) : protocol(protocol), user(user)
 {}
 
 void SocketReader::Run()
 {
-    while(!shouldTerminate)
+    while(!user.shouldTerminate())
     {
         while(!user.isConnected()){
             std::this_thread::sleep_for(std::chrono::seconds(1));
@@ -35,4 +35,7 @@ void SocketReader::Run()
             std::cout << ">>> Exit" << std::endl;
         }
     }
+
+    
+    std::cout << ">>> SocketReader terminated" << std::endl;
 }

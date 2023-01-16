@@ -12,8 +12,6 @@
 class StompProtocol
 {
 private:
-    bool shouldTerminate;
-    StompParser parser;
     User &user;
     
 

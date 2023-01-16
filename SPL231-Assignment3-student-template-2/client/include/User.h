@@ -6,7 +6,6 @@
 #include "../include/Game.h"
 #include <unordered_map>
 #include <map>
-#include <hash_map>
 
 
 using std::string;
@@ -24,6 +23,7 @@ class User
         string password;
         bool isConnectionHandlerConnected;
         bool isLogedIn;
+        bool terminate;
         vector<string> gameNames;
         vector<Game> games;
         // map<string,Game> games;
@@ -57,6 +57,9 @@ class User
         void send(string message);
         void summreizeGame(string gameName,string userName,string fileName);
         int indexOf(string gameName);
+        bool shouldTerminate();
+        void setTerminate(bool _terminate);
+        
 
         
 

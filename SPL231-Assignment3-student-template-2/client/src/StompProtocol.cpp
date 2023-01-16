@@ -15,9 +15,9 @@ std::string StompProtocol::handleStompMessageFromServer(string message)
     // parse the message:
     std::unordered_map<std::string, std::string> parsedResponse;
     if(message.length() > 0 && message.at(0) == 'M')
-        parsedResponse = parser.parse_stomp_report(message);
+        parsedResponse = StompParser::parse_stomp_report(message);
     else
-        parsedResponse = parser.parse_stomp_message(message);
+        parsedResponse = StompParser::parse_stomp_message(message);
     std::string command = parsedResponse["title"];
     std::string output = "";
 
@@ -30,6 +30,7 @@ std::string StompProtocol::handleStompMessageFromServer(string message)
     else if (command == "ERROR")
     {
         output = parsedResponse["message"];
+        // handelLogOut();
     }
     else if (command == "RECEIPT")
     {
@@ -61,8 +62,14 @@ string StompProtocol::buildFrameFromKeyboardCommand(std::string userCommand)
         userCommand = "summary Germany_Japan admin summary02.txt";
     else if(userCommand == "5")
         userCommand = "exit Germany_Japan";
+    else if(userCommand == "6")
+        userCommand = "logout";
+    else
+        user.setTerminate(true);
 
-    std::vector<std::string> parsedCommand = parser.parseCommand(userCommand,' ');
+
+
+    std::vector<std::string> parsedCommand = StompParser::parseCommand(userCommand,' ');
     std::string command = parsedCommand.at(0);
     std::string output = "";
 
@@ -112,6 +119,7 @@ string StompProtocol::handleLogin(std::vector<std::string> parsedCommand)
 
 string StompProtocol::handleLogout(std::vector<std::string> parsedCommand)
 {
+    user.setTerminate(true);
     int receiptId = user.getReceiptId("");
     return "DISCONNECT\nreceipt:" + std::to_string(receiptId) + "\n\n" + '\0';
 } 
@@ -172,11 +180,11 @@ string StompProtocol::handleSummary(std::vector<std::string> parsedCommand)
 //TODO when error
 bool StompProtocol::getShouldTerminate()
 {
-    return shouldTerminate;
+    return false;
 }
 
 void StompProtocol::setShouldTerminate(bool value)
 {
-    shouldTerminate = value;
+    // shouldTerminate = value;
 }   
 

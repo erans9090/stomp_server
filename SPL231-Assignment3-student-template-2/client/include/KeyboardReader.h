@@ -13,6 +13,5 @@ public:
 private:
     StompProtocol &protocol;
     User &user;
-    bool shouldTerminate;
 
 };

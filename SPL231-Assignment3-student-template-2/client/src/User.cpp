@@ -11,7 +11,7 @@
 using std::pair;
 
 
-User::User() : receiptIdMaker(0), subIdMaker(0), userName(""), password(""), isConnectionHandlerConnected(false), isLogedIn(false), gameNames(), games(), receiptIdToMessage(), connectionHandler()
+User::User() : receiptIdMaker(0), subIdMaker(0), userName(""), password(""), isConnectionHandlerConnected(false), isLogedIn(false), terminate(false), gameNames(), games(), receiptIdToMessage(), connectionHandler()
 {
 }
 
@@ -175,11 +175,21 @@ void User::summreizeGame(string gameName,string userName,string fileName)
 int User::indexOf(string gameName)
 {
     int index = -1;
-    for (int i = 0; i < games.size(); i++) {
+    for (unsigned int i = 0; i < games.size(); i++) {
         if (gameNames[i] == gameName) {
             index = i;
             break;
         }
     }
     return index;
+}
+
+bool User::shouldTerminate()
+{
+    return terminate;
+}
+
+void User::setTerminate(bool _terminate)
+{
+    terminate = _terminate;
 }
